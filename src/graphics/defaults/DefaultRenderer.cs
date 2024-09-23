@@ -8,7 +8,7 @@ namespace FrogLib;
 public class DefaultRenderer : Renderer {
 
 
-    internal DefaultRenderer(IGLFWGraphicsContext context) : base(context) { }
+    public DefaultRenderer(IGLFWGraphicsContext context) : base(context) { }
 
     public override void Init() {
 
