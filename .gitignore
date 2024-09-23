@@ -1,0 +1,10 @@
+/**
+
+!.gitignore
+!FrogLib.csproj
+!README.md
+!CHANGELOG.md
+
+!src/
+!src/**
+
