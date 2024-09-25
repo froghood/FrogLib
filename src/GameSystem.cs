@@ -1,4 +1,5 @@
-using FrogLib;
+
+namespace FrogLib;
 
 public abstract class GameSystem {
 

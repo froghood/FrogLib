@@ -212,15 +212,18 @@ public static class Game {
     }
 
     private static void Poll() {
+        systemProvider.Poll();
         Input.PollInputs();
         Scenes.Current.Poll();
     }
 
     private static void Update() {
+        systemProvider.Update();
         Scenes.Current.Update();
     }
 
     private static void Render(float alpha) {
+        systemProvider.Render(alpha);
         Scenes.Current.Render(alpha);
         Graphics.Render();
     }

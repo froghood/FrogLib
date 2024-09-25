@@ -1,5 +1,5 @@
 
-using FrogLib;
+namespace FrogLib;
 
 internal class GameSystemProvider : GameSystem {
 
