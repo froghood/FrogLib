@@ -1,4 +1,6 @@
 
+using System.Reflection;
+
 namespace FrogLib;
 
 internal class GameSystemProvider {
@@ -34,7 +36,7 @@ internal class GameSystemProvider {
             throw new Exception($"System \"{type.Name}\" already registered");
         }
 
-        var system = (T)Activator.CreateInstance(type)!;
+        var system = (T)Activator.CreateInstance(type, true)!;
 
         system.Startup();
 
