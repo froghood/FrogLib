@@ -1,7 +1,7 @@
 
 namespace FrogLib;
 
-internal class GameSystemProvider : GameSystem {
+internal class GameSystemProvider {
 
 
 
@@ -42,25 +42,25 @@ internal class GameSystemProvider : GameSystem {
 
 
 
-    protected internal override void Poll() {
+    protected internal void Poll() {
         for (int i = 0; i < systems.Count; i++) {
             systems[i].Poll();
         }
     }
 
-    protected internal override void Update() {
+    protected internal void Update() {
         for (int i = 0; i < systems.Count; i++) {
             systems[i].Update();
         }
     }
 
-    protected internal override void Render(float alpha) {
+    protected internal void Render(float alpha) {
         for (int i = 0; i < systems.Count; i++) {
             systems[i].Render(alpha);
         }
     }
 
-    protected internal override void Shutdown() {
+    protected internal void Shutdown() {
         for (int i = 0; i < systems.Count; i++) {
             systems[i].Shutdown();
         }
