@@ -9,26 +9,9 @@ namespace FrogLib;
 public static class Game {
 
     public static bool IsRunning { get; private set; }
-
-    [AllowNull]
-    private static GameSystemProvider systemProvider;
-
-
-    [AllowNull]
-    public static Graphics Graphics { get; private set; }
-
-    [AllowNull]
-    public static Input Input { get; private set; }
-
-    [AllowNull]
-    public static SceneStorage Scenes { get; private set; }
-
     public static Vector2 WindowSize { get => window.ClientSize; }
-
-
-
+    public static IGLFWGraphicsContext Context { get => window.Context; }
     public static long Time { get; private set; }
-
 
     /// <summary>
     /// the total number of frames rendered so far
@@ -37,20 +20,29 @@ public static class Game {
     public static float Delta { get; private set; }
 
 
+
+    [AllowNull]
+    public static Input Input { get; private set; }
+
+    [AllowNull]
+    private static GameSystemProvider systemProvider;
+
     [AllowNull]
     private static NativeWindow window;
-
 
     [AllowNull]
     private static Stopwatch clock;
 
+
+
     private static int updateFrequency;
     private static int renderFrequency;
+
+
 
     public static void Init(NativeWindowSettings settings) {
 
         systemProvider = new GameSystemProvider();
-
 
         // window
         window = new NativeWindow(settings);
@@ -62,20 +54,16 @@ public static class Game {
             GL.Viewport(0, 0, e.Width, e.Height);
         };
 
-        // graphics
-        Graphics = new Graphics(window.Context);
+        // clock
+        clock = new Stopwatch();
 
         // input
         Input = new Input(window);
 
-        // scenes
-        Scenes = new SceneStorage();
-
-        // clock
-        clock = new Stopwatch();
-
         SetUpdateFrequency(60);
     }
+
+
 
     public static void Init(Vector2i size) {
 
@@ -88,6 +76,8 @@ public static class Game {
         Game.Init(settings);
 
     }
+
+
 
     public static void Run(RunType type) {
 
@@ -109,46 +99,12 @@ public static class Game {
         window.Dispose();
     }
 
-    public static T Get<T>() where T : GameSystem {
-        return systemProvider.Get<T>();
-    }
 
-    public static void Register<T>() where T : GameSystem {
-        systemProvider.Register<T>();
-    }
 
-    // private static void RunA() {
-    //     double previousTime = 0d;
-    //     double timeBudget = 0d;
+    public static T Get<T>() where T : GameSystem => systemProvider.Get<T>();
+    public static T Register<T>() where T : GameSystem => systemProvider.Register<T>();
 
-    //     float targetDelta = 1f / updateFrequency;
 
-    //     while (IsRunning) {
-
-    //         var time = clock.Elapsed.TotalSeconds;
-
-    //         Time = time;
-    //         Delta = time - previousTime;
-    //         previousTime = time;
-
-    //         timeBudget += Delta;
-
-    //         Poll();
-
-    //         while (timeBudget >= FixedDelta) {
-    //             Update();
-
-    //             timeBudget -= FixedDelta;
-    //         }
-
-    //         float alpha = 1f - (float)(timeBudget / FixedDelta);
-
-    //         Render(alpha);
-
-    //         Frame++;
-
-    //     }
-    // }
 
     private static void RunVariableCoupled() {
 
@@ -203,7 +159,6 @@ public static class Game {
     }
 
     public static void SetUpdateFrequency(int frequency) {
-
         updateFrequency = Math.Max(frequency, 1);
     }
 
@@ -212,20 +167,17 @@ public static class Game {
     }
 
     private static void Poll() {
-        systemProvider.Poll();
         Input.PollInputs();
-        Scenes.Current.Poll();
+        systemProvider.Poll();
     }
 
     private static void Update() {
         systemProvider.Update();
-        Scenes.Current.Update();
     }
 
     private static void Render(float alpha) {
         systemProvider.Render(alpha);
-        Scenes.Current.Render(alpha);
-        Graphics.Render();
+        Frame++;
     }
 
 }

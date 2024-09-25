@@ -1,6 +1,6 @@
 namespace FrogLib;
 
-public class SceneStorage {
+public class SceneStorage : GameSystem {
 
     internal Scene Current { get => current; }
 
@@ -45,4 +45,8 @@ public class SceneStorage {
             current = scene;
         }
     }
+
+    protected internal override void Poll() => Current.Poll();
+    protected internal override void Update() => Current.Update();
+    protected internal override void Render(float alpha) => Current.Render(alpha);
 }

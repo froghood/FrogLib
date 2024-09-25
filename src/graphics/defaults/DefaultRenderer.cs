@@ -5,12 +5,22 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace FrogLib;
 
-public class DefaultRenderer : Renderer {
+public class DefaultRenderer : GameSystem {
 
 
-    public DefaultRenderer(IGLFWGraphicsContext context) : base(context) { }
+    private List<IRenderable> renderables;
 
-    public override void Init() {
+    public DefaultRenderer() {
+        renderables = new List<IRenderable>();
+    }
+
+
+
+    public void Submit(IRenderable renderable) => renderables.Add(renderable);
+
+
+
+    protected internal override void Startup() {
 
         GL.Enable(EnableCap.Blend);
 
@@ -24,16 +34,18 @@ public class DefaultRenderer : Renderer {
         GL.ClearColor(1f, 1f, 1f, 1f);
     }
 
-    public override void Render(IRenderable[] renderables) {
+
+
+    protected internal override void Render(float alpha) {
 
         GL.Clear(ClearBufferMask.ColorBufferBit);
 
-        for (int i = 0; i < renderables.Length; i++) {
-            var renderable = renderables[i];
-
-            renderable.Render();
+        for (int i = 0; i < renderables.Count; i++) {
+            renderables[i].Render();
         }
 
-        Context.SwapBuffers();
+        renderables.Clear();
+
+        Game.Context.SwapBuffers();
     }
 }

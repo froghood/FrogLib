@@ -25,9 +25,11 @@ public class PixelSprite : DefaultRenderable {
 
         if (SpriteName is null) return;
 
-        var spriteSize = Game.Graphics.SpriteAtlas.GetSpriteSize(SpriteName);
-        var spriteBounds = Game.Graphics.SpriteAtlas.GetSpriteBounds(SpriteName);
-        var textureSize = Game.Graphics.SpriteAtlas.GetTextureSize();
+        var spriteAtlas = Game.Get<TextureAtlas>();
+
+        var spriteSize = spriteAtlas.GetSpriteSize(SpriteName);
+        var spriteBounds = spriteAtlas.GetSpriteBounds(SpriteName);
+        var textureSize = spriteAtlas.GetTextureSize();
 
         float[] vertices = {
             0f, 0f, spriteBounds.Min.X - 1f, spriteBounds.Min.Y - 1f,
@@ -54,18 +56,20 @@ public class PixelSprite : DefaultRenderable {
         vertexArray.BufferVertexData(vertices, BufferUsageHint.DynamicDraw);
         vertexArray.Bind();
 
-        Game.Graphics.ShaderLibrary.UseShader("pixelsprite");
+        var shaderLibrary = Game.Get<ShaderLibrary>();
 
-        Game.Graphics.ShaderLibrary.Uniform("modelMatrix", modelMatrix);
-        Game.Graphics.ShaderLibrary.Uniform("projectionMatrix", projectionMatrix);
+        shaderLibrary.UseShader("pixelsprite");
 
-        Game.Graphics.ShaderLibrary.Uniform("scale", Scale);
-        Game.Graphics.ShaderLibrary.Uniform("spriteTopLeft", (Vector2)spriteBounds.Min);
-        Game.Graphics.ShaderLibrary.Uniform("spriteBottomRight", (Vector2)spriteBounds.Max);
-        Game.Graphics.ShaderLibrary.Uniform("textureSize", textureSize);
-        Game.Graphics.ShaderLibrary.Uniform("color", Color);
+        shaderLibrary.Uniform("modelMatrix", modelMatrix);
+        shaderLibrary.Uniform("projectionMatrix", projectionMatrix);
 
-        Game.Graphics.TextureLibrary.UseTexture("sprites", TextureUnit.Texture0);
+        shaderLibrary.Uniform("scale", Scale);
+        shaderLibrary.Uniform("spriteTopLeft", (Vector2)spriteBounds.Min);
+        shaderLibrary.Uniform("spriteBottomRight", (Vector2)spriteBounds.Max);
+        shaderLibrary.Uniform("textureSize", textureSize);
+        shaderLibrary.Uniform("color", Color);
+
+        Game.Get<TextureLibrary>().UseTexture("sprites", TextureUnit.Texture0);
 
         Blend();
 

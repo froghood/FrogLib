@@ -3,7 +3,7 @@ using OpenTK.Mathematics;
 
 namespace FrogLib;
 
-public class TextureAtlas {
+public class TextureAtlas : GameSystem {
 
     [JsonProperty]
     private int width;
@@ -56,14 +56,3 @@ public class TextureAtlas {
     public Vector2 GetTextureSize() => new Vector2(width, height);
 }
 
-public struct SubTexture {
-    public int Left { get; init; }
-    public int Top { get; init; }
-    public int Right { get; init; }
-    public int Bottom { get; init; }
-    public bool IsRotated { get; init; }
-
-    public override string ToString() {
-        return $"{Left}, {Top} | {Right}, {Bottom}";
-    }
-}

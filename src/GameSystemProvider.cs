@@ -26,7 +26,7 @@ internal class GameSystemProvider {
         return (T)registeredSystems[type];
     }
 
-    internal void Register<T>() where T : GameSystem {
+    internal T Register<T>() where T : GameSystem {
 
         var type = typeof(T);
 
@@ -36,8 +36,12 @@ internal class GameSystemProvider {
 
         var system = (T)Activator.CreateInstance(type)!;
 
+        system.Startup();
+
         systems.Add(system);
         registeredSystems[type] = system;
+
+        return system;
     }
 
 

@@ -1,3 +1,6 @@
+
+namespace FrogLib;
+
 public abstract class Scene {
 
     /// <summary>
