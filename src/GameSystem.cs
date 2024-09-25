@@ -9,5 +9,4 @@ public abstract class GameSystem {
     protected internal virtual void Render(float alpha) { }
     protected internal virtual void Shutdown() { }
 
-
 }

@@ -95,6 +95,7 @@ public static class Game {
 
         methods[type].Invoke();
 
+        systemProvider.Shutdown();
 
         window.Dispose();
     }

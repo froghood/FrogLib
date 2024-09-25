@@ -46,25 +46,25 @@ internal class GameSystemProvider {
 
 
 
-    protected internal void Poll() {
+    internal void Poll() {
         for (int i = 0; i < systems.Count; i++) {
             systems[i].Poll();
         }
     }
 
-    protected internal void Update() {
+    internal void Update() {
         for (int i = 0; i < systems.Count; i++) {
             systems[i].Update();
         }
     }
 
-    protected internal void Render(float alpha) {
+    internal void Render(float alpha) {
         for (int i = 0; i < systems.Count; i++) {
             systems[i].Render(alpha);
         }
     }
 
-    protected internal void Shutdown() {
+    internal void Shutdown() {
         for (int i = 0; i < systems.Count; i++) {
             systems[i].Shutdown();
         }
