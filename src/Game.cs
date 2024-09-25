@@ -11,6 +11,10 @@ public static class Game {
     public static bool IsRunning { get; private set; }
 
     [AllowNull]
+    private static GameSystemProvider systemProvider;
+
+
+    [AllowNull]
     public static Graphics Graphics { get; private set; }
 
     [AllowNull]
@@ -45,6 +49,7 @@ public static class Game {
 
     public static void Init(NativeWindowSettings settings) {
 
+        systemProvider = new GameSystemProvider();
 
 
         // window
@@ -102,6 +107,14 @@ public static class Game {
 
 
         window.Dispose();
+    }
+
+    public static T Get<T>() where T : GameSystem {
+        return systemProvider.Get<T>();
+    }
+
+    public static void Register<T>() where T : GameSystem {
+        systemProvider.Register<T>();
     }
 
     // private static void RunA() {
