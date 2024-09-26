@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 
 namespace FrogLib;
@@ -10,6 +11,7 @@ public static class Game {
 
     public static bool IsRunning { get; private set; }
     public static Vector2 WindowSize { get => window.ClientSize; }
+    public static CursorState CursorState => window.CursorState;
     public static IGLFWGraphicsContext Context { get => window.Context; }
     public static long Time { get; private set; }
 
