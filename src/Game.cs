@@ -11,7 +11,7 @@ public static class Game {
 
     public static bool IsRunning { get; private set; }
     public static Vector2 WindowSize { get => window.ClientSize; }
-    public static CursorState CursorState => window.CursorState;
+    public static CursorState CursorState { get => window.CursorState; set => window.CursorState = value; }
     public static IGLFWGraphicsContext Context { get => window.Context; }
     public static long Time { get; private set; }
 
