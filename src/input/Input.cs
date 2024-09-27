@@ -23,6 +23,7 @@ public class Input {
 
 
     public Vector2 GetMousePosition() => window.MousePosition;
+    public void SetMousePosition(Vector2 position) => window.MousePosition = position;
     public Vector2 GetMouseScroll() => window.MouseState.ScrollDelta;
 
 
