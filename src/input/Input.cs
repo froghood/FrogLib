@@ -27,6 +27,8 @@ public class Input {
     public Vector2 GetMouseScroll() => window.MouseState.ScrollDelta;
 
     public Vector2 GetMouseDelta() => window.MouseState.Delta;
+    public MouseState GetMouseState() => window.MouseState;
+    public KeyboardState GetKeyboardState() => window.KeyboardState;
 
 
 
