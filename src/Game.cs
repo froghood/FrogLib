@@ -126,8 +126,6 @@ public static class Game {
             Delta = time - previousTime;
             previousTime = time;
 
-            Poll();
-
             Update();
 
             if (Delta.AsSeconds() * updateFrequency <= 1f) Render(1f); // skip 
@@ -146,12 +144,13 @@ public static class Game {
             Time = time;
             Delta = (long)Math.Round(1000000d / updateFrequency);
 
-            Poll();
-
             if (time * updateFrequency >= totalUpdateCount * 1000000L) {
+
                 Update();
                 totalUpdateCount++;
+
             } else {
+
                 if (time * renderFrequency >= totalRenderCount * 1000000L) {
 
                     Time nearestRenderCount = time * renderFrequency / 1000000L;
@@ -174,16 +173,13 @@ public static class Game {
         renderFrequency = Math.Max(frequency, 1);
     }
 
-    private static void Poll() {
-        Input.PollInputs();
-        systemProvider.Poll();
-    }
-
     private static void Update() {
 
         Time time = clock.ElapsedTicks / (Stopwatch.Frequency / 1000000L);
         UpdateTime = time - previousUpdateTime;
         previousUpdateTime = time;
+
+        Input.PollInputs();
 
         systemProvider.Update();
     }

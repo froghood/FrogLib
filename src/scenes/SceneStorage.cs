@@ -46,7 +46,6 @@ public class SceneStorage : GameSystem {
         }
     }
 
-    protected internal override void Poll() => Current.Poll();
     protected internal override void Update() => Current.Update();
     protected internal override void Render(float alpha) => Current.Render(alpha);
 }

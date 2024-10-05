@@ -20,17 +20,12 @@ public class Input {
     public bool IsMouseDown(MouseButton button) => window.IsMouseButtonDown(button);
     public bool IsMousePressed(MouseButton button) => window.IsMouseButtonPressed(button);
     public bool IsMouseReleased(MouseButton button) => window.IsMouseButtonReleased(button);
-
-
     public Vector2 GetMousePosition() => window.MousePosition;
     public void SetMousePosition(Vector2 position) => window.MousePosition = position;
     public Vector2 GetMouseScroll() => window.MouseState.ScrollDelta;
-
     public Vector2 GetMouseDelta() => window.MouseState.Delta;
     public MouseState GetMouseState() => window.MouseState;
     public KeyboardState GetKeyboardState() => window.KeyboardState;
-
-
 
 
 

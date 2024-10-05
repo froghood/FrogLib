@@ -47,13 +47,6 @@ internal class GameSystemProvider {
     }
 
 
-
-    internal void Poll() {
-        for (int i = 0; i < systems.Count; i++) {
-            systems[i].Poll();
-        }
-    }
-
     internal void Update() {
         for (int i = 0; i < systems.Count; i++) {
             systems[i].Update();
