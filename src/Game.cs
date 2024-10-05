@@ -14,18 +14,22 @@ public static class Game {
     public static CursorState CursorState { get => window.CursorState; set => window.CursorState = value; }
     public static bool IsFocused => window.IsFocused;
     public static IGLFWGraphicsContext Context { get => window.Context; }
-    public static long Time { get; private set; }
+    public static Time Time { get; private set; }
+    public static Time Delta { get; private set; }
+
+    public static Time UpdateTime { get; private set; }
+    public static Time RenderTime { get; private set; }
 
     /// <summary>
     /// the total number of frames rendered so far
     /// </summary>
     public static long Frame { get; private set; }
-    public static float Delta { get; private set; }
 
 
 
     [AllowNull]
     public static Input Input { get; private set; }
+
 
     [AllowNull]
     private static GameSystemProvider systemProvider;
@@ -40,8 +44,8 @@ public static class Game {
 
     private static int updateFrequency;
     private static int renderFrequency;
-
-
+    private static Time previousRenderTime;
+    private static Time previousUpdateTime;
 
     public static void Init(NativeWindowSettings settings) {
 
@@ -112,21 +116,21 @@ public static class Game {
 
     private static void RunVariableCoupled() {
 
-        long previousTime = 0L;
+        Time previousTime = 0L;
 
         while (IsRunning) {
 
-            long time = clock.ElapsedTicks / (Stopwatch.Frequency / 1000000L);
+            Time time = clock.ElapsedTicks / (Stopwatch.Frequency / 1000000L);
 
             Time = time;
-            Delta = (time - previousTime) / 1000000f;
+            Delta = time - previousTime;
             previousTime = time;
 
             Poll();
 
             Update();
 
-            if (Delta * updateFrequency <= 1f) Render(1f); // skip 
+            if (Delta.AsSeconds() * updateFrequency <= 1f) Render(1f); // skip 
         }
     }
 
@@ -137,10 +141,10 @@ public static class Game {
 
         while (IsRunning) {
 
-            long time = clock.ElapsedTicks / (Stopwatch.Frequency / 1000000L);
+            Time time = clock.ElapsedTicks / (Stopwatch.Frequency / 1000000L);
 
             Time = time;
-            Delta = 1f / updateFrequency;
+            Delta = (long)Math.Round(1000000d / updateFrequency);
 
             Poll();
 
@@ -150,7 +154,7 @@ public static class Game {
             } else {
                 if (time * renderFrequency >= totalRenderCount * 1000000L) {
 
-                    long nearestRenderCount = time * renderFrequency / 1000000L;
+                    Time nearestRenderCount = time * renderFrequency / 1000000L;
 
                     float alpha = nearestRenderCount * updateFrequency % renderFrequency / (float)renderFrequency;
                     Render(alpha);
@@ -176,10 +180,20 @@ public static class Game {
     }
 
     private static void Update() {
+
+        Time time = clock.ElapsedTicks / (Stopwatch.Frequency / 1000000L);
+        UpdateTime = time - previousUpdateTime;
+        previousUpdateTime = time;
+
         systemProvider.Update();
     }
 
     private static void Render(float alpha) {
+
+        Time time = clock.ElapsedTicks / (Stopwatch.Frequency / 1000000L);
+        RenderTime = time - previousRenderTime;
+        previousRenderTime = time;
+
         systemProvider.Render(alpha);
         Frame++;
     }
