@@ -24,11 +24,6 @@ public abstract class Scene {
     public virtual void Shutdown() { }
 
     /// <summary>
-    /// Called when inputs are polled
-    /// </summary>
-    public virtual void Poll() { }
-
-    /// <summary>
     /// Called every frame when the game updates
     /// </summary>
     public virtual void Update() { }
