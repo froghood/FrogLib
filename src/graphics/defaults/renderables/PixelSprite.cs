@@ -69,7 +69,7 @@ public class PixelSprite : DefaultRenderable {
         shaderLibrary.Uniform("textureSize", textureSize);
         shaderLibrary.Uniform("color", Color);
 
-        Game.Get<TextureLibrary>().UseTexture("sprites", TextureUnit.Texture0);
+        Game.Get<TextureLibrary>().Use("sprites", 0);
 
         Blend();
 
