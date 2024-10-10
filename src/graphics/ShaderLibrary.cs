@@ -54,13 +54,38 @@ public class ShaderLibrary : GameSystem {
 
 
 
+    public void LoadDefaultShaders() {
+        var rectangleShader = new Shader()
+            .FromSource(ShaderType.VertexShader, DefaultShaders.RectangleVertexShader)
+            .FromSource(ShaderType.FragmentShader, DefaultShaders.RectangleFragmentShader);
+
+        var circleShader = new Shader()
+            .FromSource(ShaderType.VertexShader, DefaultShaders.CircleVertexShader)
+            .FromSource(ShaderType.FragmentShader, DefaultShaders.CircleFragmentShader);
+
+        var lineShader = new Shader()
+            .FromSource(ShaderType.VertexShader, DefaultShaders.LineVertexShader)
+            .FromSource(ShaderType.FragmentShader, DefaultShaders.LineFragmentShader);
+
+        var pixelSpriteShader = new Shader()
+            .FromSource(ShaderType.VertexShader, DefaultShaders.PixelSpriteVertexShader)
+            .FromSource(ShaderType.FragmentShader, DefaultShaders.PixelSpriteFragmentShader);
+
+        Add("rectangle", rectangleShader);
+        Add("circle", circleShader);
+        Add("line", lineShader);
+        Add("pixelSprite", pixelSpriteShader);
+    }
+
+
+
     private void ThrowIfPresent(string name) {
         if (shaders.ContainsKey(name)) throw new Exception($"Shader with the name {name} already present in the library.");
     }
 
     private Shader GetOrThrowIfNotPresent(string name) {
         if (shaders.TryGetValue(name, out var shader)) return shader;
-        throw new Exception($"No shader with the name {name} found in the library.");
+        throw new Exception($"No shader with the name {name} found in the library. If you are using default renderables, be sure to load default shaders.");
     }
 
 }
