@@ -66,21 +66,18 @@ public class RenderableRectangle : DefaultRenderable {
             0,
             -1f, 1f);
 
-
-
-
         vertexArray.BufferVertexData(vertices, BufferUsageHint.DynamicDraw);
         vertexArray.Bind();
 
-        var shaderLibrary = Game.Get<ShaderLibrary>();
+        var shader = Game.Get<ShaderLibrary>().Get("line");
 
-        shaderLibrary.UseShader("rectangle");
+        shader.Uniform("modelMatrix", modelMatrix);
+        shader.Uniform("projectionMatrix", projectionMatrix);
 
-        shaderLibrary.Uniform("modelMatrix", modelMatrix);
-        shaderLibrary.Uniform("projectionMatrix", projectionMatrix);
+        shader.Uniform("fillColor", FillColor);
+        shader.Uniform("strokeColor", StrokeColor);
 
-        shaderLibrary.Uniform("fillColor", FillColor);
-        shaderLibrary.Uniform("strokeColor", StrokeColor);
+        shader.Use();
 
         Blend();
 

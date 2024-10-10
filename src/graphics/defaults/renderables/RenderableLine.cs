@@ -55,14 +55,14 @@ public class RenderableLine : DefaultRenderable {
         vertexArray.BufferVertexData(vertices, BufferUsageHint.DynamicDraw);
         vertexArray.Bind();
 
-        var shaderLibrary = Game.Get<ShaderLibrary>();
+        var shader = Game.Get<ShaderLibrary>().Get("line");
 
-        shaderLibrary.UseShader("line");
+        shader.Uniform("modelMatrix", modelMatrix);
+        shader.Uniform("projectionMatrix", projectionMatrix);
 
-        shaderLibrary.Uniform("modelMatrix", modelMatrix);
-        shaderLibrary.Uniform("projectionMatrix", projectionMatrix);
+        shader.Uniform("color", Color);
 
-        shaderLibrary.Uniform("color", Color);
+        shader.Use();
 
         Blend();
 

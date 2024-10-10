@@ -53,20 +53,20 @@ public class RenderableCircle : DefaultRenderable {
         vertexArray.BufferVertexData(vertices, BufferUsageHint.DynamicDraw);
         vertexArray.Bind();
 
-        var shaderLibrary = Game.Get<ShaderLibrary>();
+        var shader = Game.Get<ShaderLibrary>().Get("circle");
 
-        shaderLibrary.UseShader("circle");
+        shader.Uniform("modelMatrix", modelMatrix);
+        shader.Uniform("projectionMatrix", projectionMatrix);
 
-        shaderLibrary.Uniform("modelMatrix", modelMatrix);
-        shaderLibrary.Uniform("projectionMatrix", projectionMatrix);
+        shader.Uniform("radius", Radius);
+        shader.Uniform("outlineWidth", OutlineWidth);
 
-        shaderLibrary.Uniform("radius", Radius);
-        shaderLibrary.Uniform("outlineWidth", OutlineWidth);
+        shader.Uniform("scale", Scale);
 
-        shaderLibrary.Uniform("scale", Scale);
+        shader.Uniform("fillColor", FillColor);
+        shader.Uniform("outlineColor", OutlineColor);
 
-        shaderLibrary.Uniform("fillColor", FillColor);
-        shaderLibrary.Uniform("outlineColor", OutlineColor);
+        shader.Use();
 
         Blend();
 

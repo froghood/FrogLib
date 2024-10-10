@@ -5,129 +5,62 @@ namespace FrogLib;
 
 public class ShaderLibrary : GameSystem {
 
-
-    private Dictionary<string, int> programs = new();
-
-    private Dictionary<int, Dictionary<string, int>> shaderLocations = new();
-
-    private int currentlyBoundProgram = 0;
+    private Dictionary<string, Shader> shaders = new();
 
 
 
-    internal ShaderLibrary() { }
+    public void Add(string name, Shader shader) {
+        ThrowIfPresent(name);
+        shaders.Add(name, shader);
+    }
 
+    public Shader Get(string name) => GetOrThrowIfNotPresent(name);
 
-
-    public void LoadShaderFromPath(string shaderPath, ShaderType shaderType) {
-
-        var name = Path.GetFileNameWithoutExtension(shaderPath);
-        var source = File.ReadAllText(shaderPath);
-
-        LoadShader(name, shaderType, source);
+    public void Use(string name) {
+        var shader = GetOrThrowIfNotPresent(name);
+        shader.Use();
     }
 
 
 
-    public void LoadShader(string name, ShaderType shaderType, string source) {
-        int shader = GL.CreateShader(shaderType);
+    // vec1
+    public void Uniform(string shaderName, string uniformName, float value) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
+    public void Uniform(string shaderName, string uniformName, int value) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
+    public void Uniform(string shaderName, string uniformName, double value) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
 
-        GL.ShaderSource(shader, source);
-        _ = CompileShader(shader);
+    // vec2
+    public void Uniform(string shaderName, string uniformName, Vector2 value) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
+    public void Uniform(string shaderName, string uniformName, Vector2i value) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
+
+    // vec3
+    public void Uniform(string shaderName, string uniformName, Vector3 value) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
+    public void Uniform(string shaderName, string uniformName, Vector3i value) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
+
+    // vec4
+    public void Uniform(string shaderName, string uniformName, Vector4 value) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
+    public void Uniform(string shaderName, string uniformName, Vector4i value) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
+
+    // mat2
+    public void Uniform(string shaderName, string uniformName, Matrix2 value, bool transpose = false) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
+    public void Uniform(string shaderName, string uniformName, Matrix2d value, bool transpose = false) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
+
+    // mat3
+    public void Uniform(string shaderName, string uniformName, Matrix3 value, bool transpose = false) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
+    public void Uniform(string shaderName, string uniformName, Matrix3d value, bool transpose = false) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
+
+    // mat4
+    public void Uniform(string shaderName, string uniformName, Matrix4 value, bool transpose = false) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
+    public void Uniform(string shaderName, string uniformName, Matrix4d value, bool transpose = false) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
 
 
-        programs.TryAdd(name, GL.CreateProgram());
 
-        programs.TryGetValue(name, out int program);
-
-        GL.AttachShader(program, shader);
-
-        GL.LinkProgram(program);
-
-        GL.GetProgram(program, GetProgramParameterName.LinkStatus, out int status);
-        if (status == 0) {
-            string infoLog = GL.GetProgramInfoLog(program);
-            Log.Info(infoLog);
-        }
+    private void ThrowIfPresent(string name) {
+        if (shaders.ContainsKey(name)) throw new Exception($"Shader with the name {name} already present in the library.");
     }
 
-
-
-    public void LoadDefaultShaders() {
-        LoadShader("rectangle", ShaderType.VertexShader, DefaultShaders.RectangleVertexShader);
-        LoadShader("rectangle", ShaderType.FragmentShader, DefaultShaders.RectangleFragmentShader);
-        LoadShader("circle", ShaderType.VertexShader, DefaultShaders.CircleVertexShader);
-        LoadShader("circle", ShaderType.FragmentShader, DefaultShaders.CircleFragmentShader);
-        LoadShader("line", ShaderType.VertexShader, DefaultShaders.LineVertexShader);
-        LoadShader("line", ShaderType.FragmentShader, DefaultShaders.LineFragmentShader);
-        LoadShader("pixelsprite", ShaderType.VertexShader, DefaultShaders.PixelSpriteVertexShader);
-        LoadShader("pixelsprite", ShaderType.FragmentShader, DefaultShaders.PixelSpriteFragmentShader);
+    private Shader GetOrThrowIfNotPresent(string name) {
+        if (shaders.TryGetValue(name, out var shader)) return shader;
+        throw new Exception($"No shader with the name {name} found in the library.");
     }
 
-
-
-    public void UseShader(string name) {
-        if (programs.TryGetValue(name, out int program)) {
-            if (program == currentlyBoundProgram) return;
-
-            GL.UseProgram(program);
-            currentlyBoundProgram = program;
-        } else {
-            Log.Warn($"shader: \"{name}\" not loaded. if you are using default renderables be sure to load default shaders");
-        }
-    }
-
-
-
-    public void Uniform(string name, float value) { if (GetUniformLocation(name, out int location)) GL.Uniform1(location, value); }
-    public void Uniform(string name, Vector2 value) { if (GetUniformLocation(name, out int location)) GL.Uniform2(location, value); }
-    public void Uniform(string name, Vector3 value) { if (GetUniformLocation(name, out int location)) GL.Uniform3(location, value); }
-    public void Uniform(string name, Vector4 value) { if (GetUniformLocation(name, out int location)) GL.Uniform4(location, value); }
-    public void Uniform(string name, int value) { if (GetUniformLocation(name, out int location)) GL.Uniform1(location, value); }
-    public void Uniform(string name, Vector2i value) { if (GetUniformLocation(name, out int location)) GL.Uniform2(location, value); }
-    public void Uniform(string name, Vector3i value) { if (GetUniformLocation(name, out int location)) GL.Uniform3(location, value); }
-    public void Uniform(string name, Vector4i value) { if (GetUniformLocation(name, out int location)) GL.Uniform4(location, value); }
-    public void Uniform(string name, Color4 value) { if (GetUniformLocation(name, out int location)) GL.Uniform4(location, value); }
-    public void Uniform(string name, bool value) { if (GetUniformLocation(name, out int location)) GL.Uniform1(location, Convert.ToInt32(value)); }
-    public void Uniform(string name, Matrix2 value) { if (GetUniformLocation(name, out int location)) GL.UniformMatrix2(location, true, ref value); }
-    public void Uniform(string name, Matrix4 value) { if (GetUniformLocation(name, out int location)) GL.UniformMatrix4(location, false, ref value); }
-
-    private bool GetUniformLocation(string name, out int location) {
-
-        if (shaderLocations.ContainsKey(currentlyBoundProgram)) {
-            if (shaderLocations[currentlyBoundProgram].TryGetValue(name, out var _location)) {
-                location = _location;
-                return true;
-            } else {
-                location = GL.GetUniformLocation(currentlyBoundProgram, name);
-                if (location >= 0) {
-                    shaderLocations[currentlyBoundProgram][name] = location;
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        } else {
-            location = GL.GetUniformLocation(currentlyBoundProgram, name);
-            if (location >= 0) {
-                shaderLocations[currentlyBoundProgram] = new Dictionary<string, int> {
-                    {name, location},
-                };
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
-
-    private int CompileShader(int handle) {
-
-        GL.CompileShader(handle);
-        GL.GetShader(handle, ShaderParameter.CompileStatus, out int status);
-
-        if (status == 0) {
-            string infoLog = GL.GetShaderInfoLog(handle);
-        }
-
-        return status;
-    }
 }

@@ -56,18 +56,18 @@ public class PixelSprite : DefaultRenderable {
         vertexArray.BufferVertexData(vertices, BufferUsageHint.DynamicDraw);
         vertexArray.Bind();
 
-        var shaderLibrary = Game.Get<ShaderLibrary>();
+        var shader = Game.Get<ShaderLibrary>().Get("pixelsprite");
 
-        shaderLibrary.UseShader("pixelsprite");
+        shader.Uniform("modelMatrix", modelMatrix);
+        shader.Uniform("projectionMatrix", projectionMatrix);
 
-        shaderLibrary.Uniform("modelMatrix", modelMatrix);
-        shaderLibrary.Uniform("projectionMatrix", projectionMatrix);
+        shader.Uniform("scale", Scale);
+        shader.Uniform("spriteTopLeft", (Vector2)spriteBounds.Min);
+        shader.Uniform("spriteBottomRight", (Vector2)spriteBounds.Max);
+        shader.Uniform("textureSize", textureSize);
+        shader.Uniform("color", Color);
 
-        shaderLibrary.Uniform("scale", Scale);
-        shaderLibrary.Uniform("spriteTopLeft", (Vector2)spriteBounds.Min);
-        shaderLibrary.Uniform("spriteBottomRight", (Vector2)spriteBounds.Max);
-        shaderLibrary.Uniform("textureSize", textureSize);
-        shaderLibrary.Uniform("color", Color);
+        shader.Use();
 
         Game.Get<TextureLibrary>().Use("sprites", 0);
 
