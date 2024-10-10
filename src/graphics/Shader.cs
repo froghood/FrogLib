@@ -86,7 +86,7 @@ public class Shader {
             return uniformLocations[name];
         } else {
             int location = GL.GetUniformLocation(program, name);
-            if (location > 0) {
+            if (location >= 0) {
                 uniformLocations[name] = location;
                 return location;
             }
