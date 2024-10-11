@@ -43,7 +43,7 @@ public class Texture {
 
 
     public void Use(int unit) {
-        GL.BindTextureUnit(0, texture);
+        GL.BindTextureUnit(unit, texture);
     }
 
     public void UseImage(int unit, TextureAccess access) {
