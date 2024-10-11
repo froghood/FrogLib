@@ -1,4 +1,5 @@
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 using StbImageSharp;
 
 namespace FrogLib;
@@ -40,6 +41,9 @@ public class Texture {
 
         GL.TextureStorage2D(texture, 1, format, width, height);
     }
+
+    public Texture(Vector2i size, SizedInternalFormat format) : this(size.X, size.Y, format) { }
+
 
 
     public void Use(int unit) {
