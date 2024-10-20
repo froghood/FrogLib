@@ -69,7 +69,7 @@ public class RenderableRectangle : DefaultRenderable {
         vertexArray.BufferVertexData(vertices, BufferUsageHint.DynamicDraw);
         vertexArray.Bind();
 
-        var shader = Game.Get<ShaderLibrary>().Get("line");
+        var shader = Game.Get<ShaderLibrary>().Get("rectangle");
 
         shader.Uniform("modelMatrix", modelMatrix);
         shader.Uniform("projectionMatrix", projectionMatrix);
