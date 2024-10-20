@@ -8,15 +8,15 @@ namespace FrogLib;
 public class DefaultRenderer : GameSystem {
 
 
-    private List<IRenderable> renderables;
+    private List<DefaultRenderable> renderables;
 
     public DefaultRenderer() {
-        renderables = new List<IRenderable>();
+        renderables = new List<DefaultRenderable>();
     }
 
 
 
-    public void Submit(IRenderable renderable) => renderables.Add(renderable);
+    public void Submit(DefaultRenderable renderable) => renderables.Add(renderable);
 
 
 
@@ -40,11 +40,12 @@ public class DefaultRenderer : GameSystem {
 
         GL.Clear(ClearBufferMask.ColorBufferBit);
 
-        for (int i = 0; i < renderables.Count; i++) {
-            renderables[i].Render();
-        }
-
+        var sorted = renderables.OrderByDescending(e => e.Depth).ToArray();
         renderables.Clear();
+
+        for (int i = 0; i < sorted.Length; i++) {
+            sorted[i].Render();
+        }
 
         Game.Context.SwapBuffers();
     }
