@@ -56,7 +56,7 @@ public class PixelSprite : DefaultRenderable {
         vertexArray.BufferVertexData(vertices, BufferUsageHint.DynamicDraw);
         vertexArray.Bind();
 
-        var shader = Game.Get<ShaderLibrary>().Get("pixelsprite");
+        var shader = Game.Get<ShaderLibrary>().Get("pixelSprite");
 
         shader.Uniform("modelMatrix", modelMatrix);
         shader.Uniform("projectionMatrix", projectionMatrix);
