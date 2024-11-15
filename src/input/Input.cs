@@ -16,8 +16,8 @@ public class Input {
     internal Input(NativeWindow window) {
         this.window = window;
 
-        this.window.KeyDown += KeyDown;
-        this.window.KeyUp += KeyUp;
+        this.window.KeyDown += (e) => KeyDown?.Invoke(e);
+        this.window.KeyUp += (e) => KeyUp?.Invoke(e);
     }
 
 
