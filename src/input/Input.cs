@@ -1,4 +1,5 @@
 using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
@@ -6,10 +7,17 @@ namespace FrogLib;
 
 public class Input {
 
+    public event Action<KeyboardKeyEventArgs>? KeyDown;
+    public event Action<KeyboardKeyEventArgs>? KeyUp;
+
     private NativeWindow window;
+
 
     internal Input(NativeWindow window) {
         this.window = window;
+
+        this.window.KeyDown += KeyDown;
+        this.window.KeyUp += KeyUp;
     }
 
 
