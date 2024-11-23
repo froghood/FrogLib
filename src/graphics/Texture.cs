@@ -6,17 +6,17 @@ namespace FrogLib;
 
 public class Texture {
 
-    public int Handle => texture;
+    public int Id { get; }
+    public Vector2i Size { get; }
 
 
-    private int texture;
     private SizedInternalFormat format;
 
 
 
     public Texture(string path, bool preMultiply = false, bool verticalFlip = true) {
-        GL.CreateTextures(TextureTarget.Texture2D, 1, out int handle);
-        texture = handle;
+        GL.CreateTextures(TextureTarget.Texture2D, 1, out int id);
+        Id = id;
 
         format = SizedInternalFormat.Rgba8;
 
@@ -26,20 +26,24 @@ public class Texture {
 
         var image = ImageResult.FromStream(stream, ColorComponents.RedGreenBlueAlpha);
 
-        GL.TextureStorage2D(texture, 1, format, image.Width, image.Height);
+        Size = new Vector2i(image.Width, image.Height);
+
+        GL.TextureStorage2D(id, 1, format, image.Width, image.Height);
 
         if (preMultiply) PreMultiply(image);
 
-        GL.TextureSubImage2D(texture, 0, 0, 0, image.Width, image.Height, PixelFormat.Rgba, PixelType.UnsignedByte, image.Data);
+        GL.TextureSubImage2D(id, 0, 0, 0, image.Width, image.Height, PixelFormat.Rgba, PixelType.UnsignedByte, image.Data);
     }
 
     public Texture(int width, int height, SizedInternalFormat format) {
-        GL.CreateTextures(TextureTarget.Texture2D, 1, out int handle);
-        texture = handle;
+        GL.CreateTextures(TextureTarget.Texture2D, 1, out int id);
+        Id = id;
+
+        Size = new Vector2i(width, height);
 
         this.format = format;
 
-        GL.TextureStorage2D(texture, 1, format, width, height);
+        GL.TextureStorage2D(id, 1, format, width, height);
     }
 
     public Texture(Vector2i size, SizedInternalFormat format) : this(size.X, size.Y, format) { }
@@ -47,15 +51,15 @@ public class Texture {
 
 
     public void Use(int unit) {
-        GL.BindTextureUnit(unit, texture);
+        GL.BindTextureUnit(unit, Id);
     }
 
     public void UseImage(int unit, TextureAccess access) {
-        GL.BindImageTexture(unit, texture, 0, false, 0, access, format);
+        GL.BindImageTexture(unit, Id, 0, false, 0, access, format);
     }
 
-    public void SetParam(TextureParameterName param, int value) => GL.TextureParameter(texture, param, value);
-    public void SetParam(TextureParameterName param, float value) => GL.TextureParameter(texture, param, value);
+    public void SetParam(TextureParameterName param, int value) => GL.TextureParameter(Id, param, value);
+    public void SetParam(TextureParameterName param, float value) => GL.TextureParameter(Id, param, value);
 
     private static void PreMultiply(ImageResult image) {
         for (int i = 0; i < image.Data.Length; i += 4) {
