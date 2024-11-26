@@ -60,6 +60,8 @@ public class Texture {
 
     public void SetParam(TextureParameterName param, int value) => GL.TextureParameter(Id, param, value);
     public void SetParam(TextureParameterName param, float value) => GL.TextureParameter(Id, param, value);
+    public unsafe void SetParam(TextureParameterName param, Vector4 value) => GL.TextureParameter(Id, param, (float*)value);
+    public unsafe void SetParam(TextureParameterName param, Color4 value) => GL.TextureParameter(Id, param, (float*)((Vector4)value));
 
     private static void PreMultiply(ImageResult image) {
         for (int i = 0; i < image.Data.Length; i += 4) {
