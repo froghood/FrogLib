@@ -91,6 +91,8 @@ public static class Game {
         if (IsRunning) return;
         IsRunning = true;
 
+        systemProvider.Startup();
+
         window.IsVisible = true;
 
         clock.Restart();

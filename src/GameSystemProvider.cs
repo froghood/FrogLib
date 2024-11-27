@@ -46,6 +46,12 @@ internal class GameSystemProvider {
         return system;
     }
 
+    internal void Startup() {
+        for (int i = 0; i < systems.Count; i++) {
+            systems[i].Startup();
+        }
+    }
+
 
     internal void Update() {
         for (int i = 0; i < systems.Count; i++) {
