@@ -13,7 +13,7 @@ public class BindlessTexture {
         Size = texture.Size;
     }
 
-    public void MakeRensident() => GL.Arb.MakeTextureHandleResident(Handle);
+    public void MakeResident() => GL.Arb.MakeTextureHandleResident(Handle);
     public void MakeNonResident() => GL.Arb.MakeTextureHandleNonResident(Handle);
 
 }
