@@ -18,7 +18,9 @@ public static class Game {
     public static Time Delta { get; private set; }
 
     public static Time UpdateTime { get; private set; }
+    public static Time UpdateCost { get; private set; }
     public static Time RenderTime { get; private set; }
+    public static Time RenderCost { get; private set; }
 
     /// <summary>
     /// the total number of frames rendered so far
@@ -122,7 +124,7 @@ public static class Game {
 
         while (IsRunning) {
 
-            Time time = clock.ElapsedTicks / (Stopwatch.Frequency / 1000000L);
+            Time time = GetTime();
 
             Time = time;
             Delta = time - previousTime;
@@ -141,7 +143,7 @@ public static class Game {
 
         while (IsRunning) {
 
-            Time time = clock.ElapsedTicks / (Stopwatch.Frequency / 1000000L);
+            Time time = GetTime();
 
             Time = time;
             Delta = (long)Math.Round(1000000d / updateFrequency);
@@ -177,23 +179,29 @@ public static class Game {
 
     private static void Update() {
 
-        Time time = clock.ElapsedTicks / (Stopwatch.Frequency / 1000000L);
-        UpdateTime = time - previousUpdateTime;
-        previousUpdateTime = time;
+        Time time = GetTime();
 
         Input.PollInputs();
-
         systemProvider.Update();
+
+        UpdateCost = GetTime() - time;
+        UpdateTime = time - previousUpdateTime;
+        previousUpdateTime = time;
     }
 
     private static void Render(float alpha) {
 
-        Time time = clock.ElapsedTicks / (Stopwatch.Frequency / 1000000L);
+        Time time = GetTime();
+
+        systemProvider.Render(alpha);
+
+        RenderCost = GetTime() - time;
         RenderTime = time - previousRenderTime;
         previousRenderTime = time;
 
-        systemProvider.Render(alpha);
         Frame++;
     }
+
+    private static Time GetTime() => clock.ElapsedTicks / (Stopwatch.Frequency / 1000000L);
 
 }

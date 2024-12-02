@@ -71,11 +71,11 @@ public class Shader {
     public void Uniform(string name, Matrix2 value, bool transpose = false) => GL.ProgramUniformMatrix2(program, GetUniformLocation(name), transpose, ref value);
     public void Uniform(string name, Matrix2d value, bool transpose = false) => GL.ProgramUniformMatrix2(program, GetUniformLocation(name), transpose, ref value);
 
-    // mat2
+    // mat3
     public void Uniform(string name, Matrix3 value, bool transpose = false) => GL.ProgramUniformMatrix3(program, GetUniformLocation(name), transpose, ref value);
     public void Uniform(string name, Matrix3d value, bool transpose = false) => GL.ProgramUniformMatrix3(program, GetUniformLocation(name), transpose, ref value);
 
-    // mat2
+    // mat4
     public void Uniform(string name, Matrix4 value, bool transpose = false) => GL.ProgramUniformMatrix4(program, GetUniformLocation(name), transpose, ref value);
     public void Uniform(string name, Matrix4d value, bool transpose = false) => GL.ProgramUniformMatrix4(program, GetUniformLocation(name), transpose, ref value);
 
