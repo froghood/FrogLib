@@ -9,6 +9,8 @@ namespace FrogLib;
 
 public static class Game {
 
+    public static event Action<Vector2i>? WindowResized;
+
     public static bool IsRunning { get; private set; }
     public static Vector2 WindowSize { get => window.ClientSize; }
     public static CursorState CursorState { get => window.CursorState; set => window.CursorState = value; }
@@ -17,10 +19,10 @@ public static class Game {
     public static Time Time { get; private set; }
     public static Time Delta { get; private set; }
 
+    public static Time UpdateFrequency { get; private set; }
     public static Time UpdateTime { get; private set; }
-    public static Time UpdateCost { get; private set; }
+    public static Time RenderFrequency { get; private set; }
     public static Time RenderTime { get; private set; }
-    public static Time RenderCost { get; private set; }
 
     /// <summary>
     /// the total number of frames rendered so far
@@ -59,8 +61,7 @@ public static class Game {
         window.Closing += (_) => IsRunning = false;
 
         window.FramebufferResize += (e) => {
-            Log.Info(e.Size);
-            GL.Viewport(0, 0, e.Width, e.Height);
+            WindowResized?.Invoke(new Vector2i(e.Width, e.Height));
         };
 
         // clock
@@ -184,8 +185,8 @@ public static class Game {
         Input.PollInputs();
         systemProvider.Update();
 
-        UpdateCost = GetTime() - time;
-        UpdateTime = time - previousUpdateTime;
+        UpdateTime = GetTime() - time;
+        UpdateFrequency = time - previousUpdateTime;
         previousUpdateTime = time;
     }
 
@@ -195,8 +196,8 @@ public static class Game {
 
         systemProvider.Render(alpha);
 
-        RenderCost = GetTime() - time;
-        RenderTime = time - previousRenderTime;
+        RenderTime = GetTime() - time;
+        RenderFrequency = time - previousRenderTime;
         previousRenderTime = time;
 
         Frame++;

@@ -22,6 +22,8 @@ public class DefaultRenderer : GameSystem {
 
     protected internal override void Startup() {
 
+        Game.WindowResized += (e) => GL.Viewport(0, 0, e.X, e.Y);
+
         GL.Enable(EnableCap.Blend);
 
         GL.BlendEquation(BlendEquationMode.FuncAdd);
