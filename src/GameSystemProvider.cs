@@ -38,8 +38,6 @@ internal class GameSystemProvider {
 
         var system = (T)Activator.CreateInstance(type, true)!;
 
-        system.Startup();
-
         systems.Add(system);
         registeredSystems[type] = system;
 
