@@ -114,6 +114,10 @@ public static class Game {
 
 
 
+    public static void Close() => IsRunning = false;
+
+
+
     public static T Get<T>() where T : GameSystem => systemProvider.Get<T>();
     public static T Register<T>() where T : GameSystem => systemProvider.Register<T>();
 
