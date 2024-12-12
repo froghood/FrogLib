@@ -9,6 +9,7 @@ public class Input {
 
     public event Action<KeyboardKeyEventArgs>? KeyDown;
     public event Action<KeyboardKeyEventArgs>? KeyUp;
+    public event Action<TextInputEventArgs>? TextInput;
 
     private NativeWindow window;
 
@@ -18,6 +19,7 @@ public class Input {
 
         this.window.KeyDown += (e) => KeyDown?.Invoke(e);
         this.window.KeyUp += (e) => KeyUp?.Invoke(e);
+        this.window.TextInput += (e) => TextInput?.Invoke(e);
     }
 
 
