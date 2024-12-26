@@ -9,29 +9,29 @@ public class VertexArray {
     public int Stride { get; }
     public int TotalNumOfComponents { get; }
 
-    private int vao;
     private int vbo;
-    private int ibo;
+    private int ebo;
+    private int vao;
 
-    public VertexArray(params Layout[] attributes) {
-        vao = GL.GenVertexArray();
-        GL.BindVertexArray(vao);
+    public unsafe VertexArray(params Layout[] attributes) {
 
-        ibo = GL.GenBuffer();
-        GL.BindBuffer(BufferTarget.ElementArrayBuffer, ibo);
+        fixed (int* ptr = &vbo) GL.CreateBuffers(1, ptr);
+        fixed (int* ptr = &ebo) GL.CreateBuffers(1, ptr);
+        fixed (int* ptr = &vao) GL.CreateVertexArrays(1, ptr);
 
-        vbo = GL.GenBuffer();
-        GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
+        Stride = GetStride(attributes);
 
-        Stride = attributes.Sum(e => e.Size);
-        TotalNumOfComponents = attributes.Sum(e => e.NumberOfComponents);
+        GL.VertexArrayVertexBuffer(vao, 0, vbo, 0, Stride);
+        GL.VertexArrayElementBuffer(vao, ebo);
+
+        TotalNumOfComponents = GetTotalNumOfComponents(attributes);
 
         int offset = 0;
-        for (uint i = 0; i < attributes.Length; i++) {
+        for (int i = 0; i < attributes.Length; i++) {
             var attribute = attributes[i];
 
-            GL.VertexAttribPointer(i, attribute.NumberOfComponents, attribute.Type, false, Stride, offset);
-            GL.EnableVertexAttribArray(i);
+            GL.EnableVertexArrayAttrib(vao, i);
+            GL.VertexArrayAttribFormat(vao, i, attribute.NumberOfComponents, attribute.Type, false, offset);
 
             offset += attribute.Size;
         }
@@ -44,17 +44,35 @@ public class VertexArray {
 
     public void BufferIndices(int[] data, BufferUsageHint usage) {
 
-        GL.BindBuffer(BufferTarget.ElementArrayBuffer, ibo);
+        GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
         GL.BufferData(BufferTarget.ElementArrayBuffer, data.Length * sizeof(int), data, usage);
 
         IndexCount = data.Length;
     }
 
-    public void BufferVertexData(float[] data, BufferUsageHint usage) {
-
-        GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-        GL.BufferData(BufferTarget.ArrayBuffer, data.Length * sizeof(float), data, usage);
+    public unsafe void BufferVertexData<T>(T[] data, BufferUsageHint usage) where T : unmanaged {
+        GL.NamedBufferData(vbo, data.Length * sizeof(T), data, usage);
     }
 
-    public void Bind() => GL.BindVertexArray(vao);
+    public unsafe void BufferVertexSubData<T>(T[] data, int offset, BufferUsageHint usage) where T : unmanaged {
+        GL.NamedBufferSubData(vbo, offset, data.Length * sizeof(T), data);
+    }
+
+    public void Use() => GL.BindVertexArray(vao);
+
+    private static int GetStride(Layout[] attributes) {
+        int stride = 0;
+        for (int i = 0; i < attributes.Length; i++) {
+            stride += attributes[i].Size;
+        }
+        return stride;
+    }
+
+    private static int GetTotalNumOfComponents(Layout[] attributes) {
+        int totalNumOfComponents = 0;
+        for (int i = 0; i < attributes.Length; i++) {
+            totalNumOfComponents += attributes[i].NumberOfComponents;
+        }
+        return totalNumOfComponents;
+    }
 }

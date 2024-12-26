@@ -15,8 +15,8 @@ public class PixelSprite : DefaultRenderable {
 
     static PixelSprite() {
         vertexArray = new VertexArray(
-            new Layout(VertexAttribPointerType.Float, 2), // position
-            new Layout(VertexAttribPointerType.Float, 2)  // uv
+            new Layout(VertexAttribType.Float, 2), // position
+            new Layout(VertexAttribType.Float, 2)  // uv
         );
 
         vertexArray.BufferIndices(new int[] { 0, 1, 2, 1, 2, 3 }, BufferUsageHint.StreamDraw);
@@ -54,7 +54,7 @@ public class PixelSprite : DefaultRenderable {
             -1f, 1f);
 
         vertexArray.BufferVertexData(vertices, BufferUsageHint.DynamicDraw);
-        vertexArray.Bind();
+        vertexArray.Use();
 
         var shader = Game.Get<ShaderLibrary>().Get("pixelSprite");
 

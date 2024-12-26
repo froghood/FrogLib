@@ -14,7 +14,7 @@ public class RenderableLine : DefaultRenderable {
 
     static RenderableLine() {
         vertexArray = new VertexArray(
-            new Layout(VertexAttribPointerType.Float, 2) // position
+            new Layout(VertexAttribType.Float, 2) // position
         );
 
         vertexArray.BufferIndices(new int[] {
@@ -53,7 +53,7 @@ public class RenderableLine : DefaultRenderable {
             -1f, 1f);
 
         vertexArray.BufferVertexData(vertices, BufferUsageHint.DynamicDraw);
-        vertexArray.Bind();
+        vertexArray.Use();
 
         var shader = Game.Get<ShaderLibrary>().Get("line");
 

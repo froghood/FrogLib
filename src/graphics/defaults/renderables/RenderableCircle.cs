@@ -16,8 +16,8 @@ public class RenderableCircle : DefaultRenderable {
 
     static RenderableCircle() {
         vertexArray = new VertexArray(
-            new Layout(VertexAttribPointerType.Float, 2), // position
-            new Layout(VertexAttribPointerType.Float, 2) // radius
+            new Layout(VertexAttribType.Float, 2), // position
+            new Layout(VertexAttribType.Float, 2) // radius
         );
 
         vertexArray.BufferIndices(new int[]{
@@ -51,7 +51,7 @@ public class RenderableCircle : DefaultRenderable {
             -1f, 1f);
 
         vertexArray.BufferVertexData(vertices, BufferUsageHint.DynamicDraw);
-        vertexArray.Bind();
+        vertexArray.Use();
 
         var shader = Game.Get<ShaderLibrary>().Get("circle");
 
