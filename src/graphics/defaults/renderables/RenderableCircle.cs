@@ -12,10 +12,12 @@ public class RenderableCircle : DefaultRenderable {
     public Color4 FillColor { get; set; } = Color4.White;
     public Color4 OutlineColor { get; set; } = Color4.Black;
 
-    static VertexArray vertexArray;
+    private static VertexArray vertexArray;
+    private static int indexCount;
 
     static RenderableCircle() {
         var indices = new int[] { 0, 1, 2, 1, 2, 3 };
+        indexCount = indices.Length;
         var indicesSize = indices.Length * sizeof(int);
 
         vertexArray = new VertexArray(
@@ -72,6 +74,6 @@ public class RenderableCircle : DefaultRenderable {
 
         Blend();
 
-        GL.DrawElements(PrimitiveType.Triangles, vertexArray.IndexCount, DrawElementsType.UnsignedInt, 0);
+        GL.DrawElements(PrimitiveType.Triangles, indexCount, DrawElementsType.UnsignedInt, 0);
     }
 }

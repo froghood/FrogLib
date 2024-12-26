@@ -3,9 +3,6 @@ using OpenTK.Graphics.OpenGL4;
 namespace FrogLib;
 public class VertexArray {
 
-
-    public int IndexCount { get; private set; }
-
     public int Stride { get; }
     public int TotalNumOfComponents { get; }
 

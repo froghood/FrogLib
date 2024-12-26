@@ -13,6 +13,7 @@ public class RenderableRectangle : DefaultRenderable {
     public StrokeMode StrokeMode { get; set; }
 
     private static VertexArray vertexArray;
+    private static int indexCount;
 
     static RenderableRectangle() {
 
@@ -28,6 +29,7 @@ public class RenderableRectangle : DefaultRenderable {
             4, 5, 6, // inner
             5, 6, 7,
         };
+        indexCount = indices.Length;
         var indicesSize = indices.Length * sizeof(int);
 
         vertexArray = new VertexArray(
@@ -87,6 +89,6 @@ public class RenderableRectangle : DefaultRenderable {
 
         Blend();
 
-        GL.DrawElements(PrimitiveType.Triangles, vertexArray.IndexCount, DrawElementsType.UnsignedInt, 0);
+        GL.DrawElements(PrimitiveType.Triangles, indexCount, DrawElementsType.UnsignedInt, 0);
     }
 }

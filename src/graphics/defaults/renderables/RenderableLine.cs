@@ -11,9 +11,11 @@ public class RenderableLine : DefaultRenderable {
     public Color4 Color { get; set; } = Color4.Black;
 
     private static VertexArray vertexArray;
+    private static int indexCount;
 
     static RenderableLine() {
         var indices = new int[] { 0, 1, 2, 1, 2, 3 };
+        indexCount = indices.Length;
         var indicesSize = indices.Length * sizeof(int);
 
         vertexArray = new VertexArray(
@@ -68,7 +70,7 @@ public class RenderableLine : DefaultRenderable {
 
         Blend();
 
-        GL.DrawElements(PrimitiveType.Triangles, vertexArray.IndexCount, DrawElementsType.UnsignedInt, 0);
+        GL.DrawElements(PrimitiveType.Triangles, indexCount, DrawElementsType.UnsignedInt, 0);
 
     }
 
