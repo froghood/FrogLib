@@ -10,19 +10,22 @@ public class VertexArray {
     public int TotalNumOfComponents { get; }
 
     private int vbo;
-    private int ebo;
+    private int ibo;
     private int vao;
 
-    public unsafe VertexArray(params Layout[] attributes) {
+    public unsafe VertexArray(int vertexSize, int indexSize, params Layout[] attributes) {
 
         fixed (int* ptr = &vbo) GL.CreateBuffers(1, ptr);
-        fixed (int* ptr = &ebo) GL.CreateBuffers(1, ptr);
+        fixed (int* ptr = &ibo) GL.CreateBuffers(1, ptr);
         fixed (int* ptr = &vao) GL.CreateVertexArrays(1, ptr);
+
+        GL.NamedBufferStorage(vbo, vertexSize, 0, BufferStorageFlags.DynamicStorageBit);
+        GL.NamedBufferStorage(ibo, indexSize, 0, BufferStorageFlags.DynamicStorageBit);
 
         Stride = GetStride(attributes);
 
         GL.VertexArrayVertexBuffer(vao, 0, vbo, 0, Stride);
-        GL.VertexArrayElementBuffer(vao, ebo);
+        GL.VertexArrayElementBuffer(vao, ibo);
 
         TotalNumOfComponents = GetTotalNumOfComponents(attributes);
 
@@ -35,30 +38,41 @@ public class VertexArray {
 
             offset += attribute.Size;
         }
-
-        GL.BindVertexArray(0);
-        GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
-        GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-
     }
 
-    public void BufferIndices(int[] data, BufferUsageHint usage) {
 
-        GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
-        GL.BufferData(BufferTarget.ElementArrayBuffer, data.Length * sizeof(int), data, usage);
 
-        IndexCount = data.Length;
+    public unsafe void BufferVertices<T>(T[] vertices) where T : unmanaged {
+        GL.NamedBufferSubData(vbo, 0, vertices.Length * sizeof(T), vertices);
     }
 
-    public unsafe void BufferVertexData<T>(T[] data, BufferUsageHint usage) where T : unmanaged {
-        GL.NamedBufferData(vbo, data.Length * sizeof(T), data, usage);
+    public unsafe void BufferVertices<T>(T[] vertices, int offset) where T : unmanaged {
+        GL.NamedBufferSubData(vbo, offset, vertices.Length * sizeof(T), vertices);
     }
 
-    public unsafe void BufferVertexSubData<T>(T[] data, int offset, BufferUsageHint usage) where T : unmanaged {
-        GL.NamedBufferSubData(vbo, offset, data.Length * sizeof(T), data);
+    public unsafe void BufferVertices<T>(T[] vertices, int offset, int size) where T : unmanaged {
+        GL.NamedBufferSubData(vbo, offset, size, vertices);
     }
+
+
+
+    public unsafe void BufferIndices<T>(T[] indices) where T : unmanaged {
+        GL.NamedBufferSubData(ibo, 0, indices.Length * sizeof(T), indices);
+    }
+
+    public unsafe void BufferIndices<T>(T[] indices, int offset) where T : unmanaged {
+        GL.NamedBufferSubData(ibo, offset, indices.Length * sizeof(T), indices);
+    }
+
+    public unsafe void BufferIndices<T>(T[] indices, int offset, int size) where T : unmanaged {
+        GL.NamedBufferSubData(ibo, offset, size, indices);
+    }
+
+
 
     public void Use() => GL.BindVertexArray(vao);
+
+
 
     private static int GetStride(Layout[] attributes) {
         int stride = 0;

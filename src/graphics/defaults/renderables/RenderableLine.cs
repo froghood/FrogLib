@@ -13,14 +13,16 @@ public class RenderableLine : DefaultRenderable {
     private static VertexArray vertexArray;
 
     static RenderableLine() {
+        var indices = new int[] { 0, 1, 2, 1, 2, 3 };
+        var indicesSize = indices.Length * sizeof(int);
+
         vertexArray = new VertexArray(
+            sizeof(float) * 8,
+            indicesSize,
             new Layout(VertexAttribType.Float, 2) // position
         );
 
-        vertexArray.BufferIndices(new int[] {
-            0, 1, 2,
-            1, 2, 3
-        }, BufferUsageHint.StaticDraw);
+        vertexArray.BufferIndices(indices, 0, indicesSize);
     }
 
     public override void Render() {
@@ -52,7 +54,7 @@ public class RenderableLine : DefaultRenderable {
             0,
             -1f, 1f);
 
-        vertexArray.BufferVertexData(vertices, BufferUsageHint.DynamicDraw);
+        vertexArray.BufferVertices(vertices);
         vertexArray.Use();
 
         var shader = Game.Get<ShaderLibrary>().Get("line");

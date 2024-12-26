@@ -15,11 +15,8 @@ public class RenderableRectangle : DefaultRenderable {
     private static VertexArray vertexArray;
 
     static RenderableRectangle() {
-        vertexArray = new VertexArray(
-            new Layout(VertexAttribType.Float, 2) // position
-        );
 
-        vertexArray.BufferIndices(new int[] {
+        var indices = new int[] {
             0, 1, 4, // outer
             1, 4, 5,
             0, 2, 4,
@@ -30,7 +27,16 @@ public class RenderableRectangle : DefaultRenderable {
             2, 7, 6,
             4, 5, 6, // inner
             5, 6, 7,
-        }, BufferUsageHint.StaticDraw);
+        };
+        var indicesSize = indices.Length * sizeof(int);
+
+        vertexArray = new VertexArray(
+            sizeof(float) * 16,
+            indicesSize,
+            new Layout(VertexAttribType.Float, 2) // position
+        );
+
+        vertexArray.BufferIndices(indices, 0, indicesSize);
     }
     public override void Render() {
 
@@ -66,7 +72,7 @@ public class RenderableRectangle : DefaultRenderable {
             0,
             -1f, 1f);
 
-        vertexArray.BufferVertexData(vertices, BufferUsageHint.DynamicDraw);
+        vertexArray.BufferVertices(vertices);
         vertexArray.Use();
 
         var shader = Game.Get<ShaderLibrary>().Get("rectangle");
