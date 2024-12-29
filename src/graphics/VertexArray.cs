@@ -32,6 +32,7 @@ public class VertexArray {
 
             GL.EnableVertexArrayAttrib(vao, i);
             GL.VertexArrayAttribFormat(vao, i, attribute.NumberOfComponents, attribute.Type, false, offset);
+            GL.VertexArrayAttribBinding(vao, i, 0);
 
             offset += attribute.Size;
         }
