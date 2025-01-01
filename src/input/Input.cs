@@ -10,6 +10,10 @@ public class Input {
     public event Action<KeyboardKeyEventArgs>? KeyDown;
     public event Action<KeyboardKeyEventArgs>? KeyUp;
     public event Action<TextInputEventArgs>? TextInput;
+    public event Action<MouseButtonEventArgs>? MouseDown;
+    public event Action<MouseButtonEventArgs>? MouseUp;
+    public event Action<MouseWheelEventArgs>? MouseWheel;
+    public event Action<MouseMoveEventArgs>? MouseMove;
 
     private NativeWindow window;
 
@@ -20,6 +24,11 @@ public class Input {
         this.window.KeyDown += (e) => KeyDown?.Invoke(e);
         this.window.KeyUp += (e) => KeyUp?.Invoke(e);
         this.window.TextInput += (e) => TextInput?.Invoke(e);
+        this.window.MouseDown += (e) => MouseDown?.Invoke(e);
+        this.window.MouseUp += (e) => MouseUp?.Invoke(e);
+        this.window.MouseWheel += (e) => MouseWheel?.Invoke(e);
+        this.window.MouseMove += (e) => MouseMove?.Invoke(e);
+
     }
 
 
