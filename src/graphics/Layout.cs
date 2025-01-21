@@ -8,8 +8,9 @@ public struct Layout {
     public int NumberOfComponents { get; }
     public int TypeSize { get; }
     public int Size { get; }
+    public LayoutFormat Format { get; }
 
-    public Layout(VertexAttribType type, int numberOfComponents) {
+    public Layout(VertexAttribType type, int numberOfComponents, LayoutFormat format = LayoutFormat.Float) {
 
         Type = type;
         NumberOfComponents = numberOfComponents;
@@ -35,5 +36,7 @@ public struct Layout {
         };
 
         Size = TypeSize * NumberOfComponents;
+
+        Format = format;
     }
 }
