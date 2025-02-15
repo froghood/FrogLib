@@ -16,12 +16,36 @@ public static class Game {
     public static CursorState CursorState { get => window.CursorState; set => window.CursorState = value; }
     public static bool IsFocused => window.IsFocused;
     public static IGLFWGraphicsContext Context { get => window.Context; }
+
+    /// <summary>
+    /// the time since the game has been started
+    /// </summary>
     public static Time Time { get; private set; }
+
+    /// <summary>
+    /// the time between each run iteration
+    /// <para> not intended for use, use UpdateDelta or RenderDelta instead </para>
+    /// </summary>
     public static Time Delta { get; private set; }
 
-    public static Time UpdateFrequency { get; private set; }
+    /// <summary>
+    /// the time between the start of the current and previous update calls
+    /// </summary>
+    public static Time UpdateDelta { get; private set; }
+
+    /// <summary>
+    /// the time the last update call took to complete
+    /// </summary>
     public static Time UpdateTime { get; private set; }
-    public static Time RenderFrequency { get; private set; }
+
+    /// <summary>
+    /// the time between the start of the current and previous render calls
+    /// </summary>
+    public static Time RenderDelta { get; private set; }
+
+    /// <summary>
+    /// the time the last render call took to complete
+    /// </summary>
     public static Time RenderTime { get; private set; }
 
     /// <summary>
@@ -46,8 +70,8 @@ public static class Game {
 
 
 
-    private static int updateFrequency;
-    private static int renderFrequency;
+    private static int targetUpdateFrequency;
+    private static int targetRenderFrequency;
     private static Time previousRenderTime;
     private static Time previousUpdateTime;
 
@@ -70,7 +94,7 @@ public static class Game {
         // input
         Input = new Input(window);
 
-        SetUpdateFrequency(60);
+        SetTargetUpdateFrequency(60);
     }
 
 
@@ -137,7 +161,7 @@ public static class Game {
 
             Update();
 
-            if (Delta.AsSeconds() * updateFrequency <= 1f) Render(1f); // skip 
+            if (Delta.AsSeconds() * targetUpdateFrequency <= 1f) Render(1f); // skip 
         }
     }
 
@@ -151,20 +175,20 @@ public static class Game {
             Time time = GetTime();
 
             Time = time;
-            Delta = (long)Math.Round(1000000d / updateFrequency);
+            Delta = (long)Math.Round(1000000d / targetUpdateFrequency);
 
-            if (time * updateFrequency >= totalUpdateCount * 1000000L) {
+            if (time * targetUpdateFrequency >= totalUpdateCount * 1000000L) {
 
                 Update();
                 totalUpdateCount++;
 
             } else {
 
-                if (time * renderFrequency >= totalRenderCount * 1000000L) {
+                if (time * targetRenderFrequency >= totalRenderCount * 1000000L) {
 
-                    Time nearestRenderCount = time * renderFrequency / 1000000L;
+                    Time nearestRenderCount = time * targetRenderFrequency / 1000000L;
 
-                    float alpha = nearestRenderCount * updateFrequency % renderFrequency / (float)renderFrequency;
+                    float alpha = nearestRenderCount * targetUpdateFrequency % targetRenderFrequency / (float)targetRenderFrequency;
                     Render(alpha);
 
                     totalRenderCount = nearestRenderCount + 1;
@@ -174,12 +198,20 @@ public static class Game {
         }
     }
 
-    public static void SetUpdateFrequency(int frequency) {
-        updateFrequency = Math.Max(frequency, 1);
+    /// <summary>
+    /// sets the target update frequency
+    /// </summary>
+    /// <param name="frequency"> the target update frequency in hertz</param>
+    public static void SetTargetUpdateFrequency(int frequency) {
+        targetUpdateFrequency = Math.Max(frequency, 1);
     }
 
-    public static void SetRenderFrequency(int frequency) {
-        renderFrequency = Math.Max(frequency, 1);
+    /// <summary>
+    /// sets the target render frequency
+    /// </summary>
+    /// <param name="frequency"> the target render frequency in hertz</param>
+    public static void SetTargetRenderFrequency(int frequency) {
+        targetRenderFrequency = Math.Max(frequency, 1);
     }
 
     private static void Update() {
@@ -190,7 +222,7 @@ public static class Game {
         systemProvider.Update();
 
         UpdateTime = GetTime() - time;
-        UpdateFrequency = time - previousUpdateTime;
+        UpdateDelta = time - previousUpdateTime;
         previousUpdateTime = time;
     }
 
@@ -201,7 +233,7 @@ public static class Game {
         systemProvider.Render(alpha);
 
         RenderTime = GetTime() - time;
-        RenderFrequency = time - previousRenderTime;
+        RenderDelta = time - previousRenderTime;
         previousRenderTime = time;
 
         Frame++;
