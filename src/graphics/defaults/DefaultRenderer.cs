@@ -22,7 +22,7 @@ public class DefaultRenderer : GameSystem {
 
     protected internal override void Startup() {
 
-        Game.WindowResized += (e) => GL.Viewport(0, 0, e.X, e.Y);
+        Game.Window.FramebufferResize += (e) => GL.Viewport(0, 0, e.Width, e.Height);
 
         GL.Enable(EnableCap.Blend);
 
@@ -49,6 +49,6 @@ public class DefaultRenderer : GameSystem {
             sorted[i].Render();
         }
 
-        Game.Context.SwapBuffers();
+        Game.Window.Context.SwapBuffers();
     }
 }

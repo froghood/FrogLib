@@ -69,8 +69,8 @@ public class RenderableRectangle : DefaultRenderable {
 
         var projectionMatrix = Matrix4.CreateOrthographicOffCenter(
             0,
-            Game.WindowSize.X,
-            Game.WindowSize.Y,
+            Game.Window.ClientSize.X,
+            Game.Window.ClientSize.Y,
             0,
             -1f, 1f);
 
