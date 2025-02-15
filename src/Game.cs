@@ -9,13 +9,20 @@ namespace FrogLib;
 
 public static class Game {
 
-    public static event Action<Vector2i>? WindowResized;
+
+
+    public static NativeWindow Window {
+        get {
+            if (!isInitialized) {
+                throw new InvalidOperationException("Game has not been initialized");
+            }
+            return window!;
+        }
+    }
+
+
 
     public static bool IsRunning { get; private set; }
-    public static Vector2 WindowSize { get => window.ClientSize; }
-    public static CursorState CursorState { get => window.CursorState; set => window.CursorState = value; }
-    public static bool IsFocused => window.IsFocused;
-    public static IGLFWGraphicsContext Context { get => window.Context; }
 
     /// <summary>
     /// the time since the game has been started
@@ -55,18 +62,10 @@ public static class Game {
 
 
 
-    [AllowNull]
-    public static Input Input { get; private set; }
-
-
-    [AllowNull]
-    private static GameSystemProvider systemProvider;
-
-    [AllowNull]
-    private static NativeWindow window;
-
-    [AllowNull]
-    private static Stopwatch clock;
+    private static bool isInitialized;
+    private static NativeWindow? window;
+    private readonly static GameSystemProvider systemProvider = new();
+    private readonly static Stopwatch clock;
 
 
 
@@ -75,29 +74,24 @@ public static class Game {
     private static Time previousRenderTime;
     private static Time previousUpdateTime;
 
+
+
+    static Game() {
+        systemProvider = new GameSystemProvider();
+        clock = new Stopwatch();
+        clock.Reset();
+    }
+
+
+
     public static void Init(NativeWindowSettings settings) {
 
-        systemProvider = new GameSystemProvider();
-
-        // window
         window = new NativeWindow(settings);
 
         window.Closing += (_) => IsRunning = false;
 
-        window.FramebufferResize += (e) => {
-            WindowResized?.Invoke(new Vector2i(e.Width, e.Height));
-        };
-
-        // clock
-        clock = new Stopwatch();
-
-        // input
-        Input = new Input(window);
-
-        SetTargetUpdateFrequency(60);
+        isInitialized = true;
     }
-
-
 
     public static void Init(Vector2i size) {
 
@@ -107,7 +101,7 @@ public static class Game {
 
         };
 
-        Game.Init(settings);
+        Init(settings);
 
     }
 
@@ -115,14 +109,21 @@ public static class Game {
 
     public static void Run(RunType type) {
 
+        if (!isInitialized) {
+            throw new Exception("Game has not been initialized");
+        }
+
+        if (IsRunning) {
+            throw new Exception("Game is already running");
+        }
+
         if (IsRunning) return;
         IsRunning = true;
 
-        systemProvider.Startup();
+        window!.IsVisible = true;
+        clock!.Restart();
+        systemProvider!.Startup();
 
-        window.IsVisible = true;
-
-        clock.Restart();
 
         var methods = new Dictionary<RunType, Action>() {
             {RunType.VariableCoupled, RunVariableCoupled},
@@ -132,7 +133,6 @@ public static class Game {
         methods[type].Invoke();
 
         systemProvider.Shutdown();
-
         window.Dispose();
     }
 
@@ -218,8 +218,7 @@ public static class Game {
 
         Time time = GetTime();
 
-        Input.PollInputs();
-        systemProvider.Update();
+        systemProvider?.Update();
 
         UpdateTime = GetTime() - time;
         UpdateDelta = time - previousUpdateTime;
@@ -230,7 +229,7 @@ public static class Game {
 
         Time time = GetTime();
 
-        systemProvider.Render(alpha);
+        systemProvider?.Render(alpha);
 
         RenderTime = GetTime() - time;
         RenderDelta = time - previousRenderTime;

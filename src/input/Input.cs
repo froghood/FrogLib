@@ -1,11 +1,13 @@
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
-using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace FrogLib;
 
-public class Input {
+/// <summary>
+/// wrapper around opentk Game.Window input
+/// </summary>
+public class Input : GameSystem {
 
     public event Action<KeyboardKeyEventArgs>? KeyDown;
     public event Action<KeyboardKeyEventArgs>? KeyUp;
@@ -15,40 +17,43 @@ public class Input {
     public event Action<MouseWheelEventArgs>? MouseWheel;
     public event Action<MouseMoveEventArgs>? MouseMove;
 
-    private NativeWindow window;
 
 
-    internal Input(NativeWindow window) {
-        this.window = window;
+    protected internal override void Startup() {
+        Game.Window.KeyDown += (e) => KeyDown?.Invoke(e);
+        Game.Window.KeyUp += (e) => KeyUp?.Invoke(e);
+        Game.Window.TextInput += (e) => TextInput?.Invoke(e);
+        Game.Window.MouseDown += (e) => MouseDown?.Invoke(e);
+        Game.Window.MouseUp += (e) => MouseUp?.Invoke(e);
+        Game.Window.MouseWheel += (e) => MouseWheel?.Invoke(e);
+        Game.Window.MouseMove += (e) => MouseMove?.Invoke(e);
+    }
 
-        this.window.KeyDown += (e) => KeyDown?.Invoke(e);
-        this.window.KeyUp += (e) => KeyUp?.Invoke(e);
-        this.window.TextInput += (e) => TextInput?.Invoke(e);
-        this.window.MouseDown += (e) => MouseDown?.Invoke(e);
-        this.window.MouseUp += (e) => MouseUp?.Invoke(e);
-        this.window.MouseWheel += (e) => MouseWheel?.Invoke(e);
-        this.window.MouseMove += (e) => MouseMove?.Invoke(e);
-
+    protected internal override void Update() {
+        Game.Window.ProcessEvents(0);
     }
 
 
 
-    public bool IsKeyDown(Keys key) => window.IsKeyDown(key);
-    public bool IsKeyPressed(Keys key) => window.IsKeyPressed(key);
-    public bool IsKeyReleased(Keys key) => window.IsKeyReleased(key);
-    public bool IsMouseDown(MouseButton button) => window.IsMouseButtonDown(button);
-    public bool IsMousePressed(MouseButton button) => window.IsMouseButtonPressed(button);
-    public bool IsMouseReleased(MouseButton button) => window.IsMouseButtonReleased(button);
-    public Vector2 GetMousePosition() => window.MousePosition;
-    public void SetMousePosition(Vector2 position) => window.MousePosition = position;
-    public Vector2 GetMouseScroll() => window.MouseState.ScrollDelta;
-    public Vector2 GetMouseDelta() => window.MouseState.Delta;
-    public MouseState GetMouseState() => window.MouseState;
-    public KeyboardState GetKeyboardState() => window.KeyboardState;
+    public bool IsKeyDown(Keys key) => Game.Window.IsKeyDown(key);
+    public bool IsKeyPressed(Keys key) => Game.Window.IsKeyPressed(key);
+    public bool IsKeyReleased(Keys key) => Game.Window.IsKeyReleased(key);
+    public bool IsMouseDown(MouseButton button) => Game.Window.IsMouseButtonDown(button);
+    public bool IsMousePressed(MouseButton button) => Game.Window.IsMouseButtonPressed(button);
+    public bool IsMouseReleased(MouseButton button) => Game.Window.IsMouseButtonReleased(button);
 
 
 
-    internal void PollInputs() {
-        window.ProcessEvents(0);
-    }
+    public Vector2 GetMousePosition() => Game.Window.MousePosition;
+    public Vector2 GetMouseDelta() => Game.Window.MouseState.Delta;
+    public void SetMousePosition(Vector2 position) => Game.Window.MousePosition = position;
+    public Vector2 GetMouseScroll() => Game.Window.MouseState.ScrollDelta;
+
+
+
+    public MouseState GetMouseState() => Game.Window.MouseState;
+    public KeyboardState GetKeyboardState() => Game.Window.KeyboardState;
+
+
+
 }
