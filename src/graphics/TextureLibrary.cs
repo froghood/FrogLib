@@ -23,37 +23,29 @@ public class TextureLibrary : GameSystem {
         textures.Add(name, new Texture(width, height, format));
     }
 
-    public bool TryGet(string name, out Texture? texture) {
-        if (textures.TryGetValue(name, out Texture? _texture)) {
-            texture = _texture;
-            return true;
-        }
-        texture = null;
-        return false;
+    public Texture Get(string name) {
+        if (!textures.TryGetValue(name, out var texture)) return default;
+        return texture;
     }
 
     public void Use(string name, int unit) {
-        if (textures.TryGetValue(name, out Texture? texture)) {
-            texture?.Use(unit);
-        }
+        if (!textures.TryGetValue(name, out var texture)) return;
+        texture.Use(unit);
     }
 
     public void UseImage(string name, int unit, TextureAccess access) {
-        if (textures.TryGetValue(name, out Texture? texture)) {
-            texture?.UseImage(unit, access);
-        }
+        if (!textures.TryGetValue(name, out var texture)) return;
+        texture.UseImage(unit, access);
     }
 
     public void SetParam(string name, TextureParameterName param, int value) {
-        if (textures.TryGetValue(name, out Texture? texture)) {
-            texture?.SetParam(param, value);
-        }
+        if (!textures.TryGetValue(name, out var texture)) return;
+        texture.SetParam(param, value);
     }
 
     public void SetParam(string name, TextureParameterName param, float value) {
-        if (textures.TryGetValue(name, out Texture? texture)) {
-            texture?.SetParam(param, value);
-        }
+        if (!textures.TryGetValue(name, out var texture)) return;
+        texture.SetParam(param, value);
     }
 
     private void ThrowIfAlreadyPresent(string name) {
