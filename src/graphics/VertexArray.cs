@@ -64,6 +64,31 @@ public class VertexArray {
         GL.NamedBufferSubData(vbo, offset, size, vertices);
     }
 
+    public unsafe void BufferVertices<T>(ref ReadOnlySpan<T> vertices) where T : unmanaged {
+        fixed (T* ptr = &vertices[0])
+            GL.NamedBufferSubData(vbo, 0, vertices.Length * sizeof(T), (nint)ptr);
+    }
+
+    public unsafe void BufferVertices<T>(ref ReadOnlySpan<T> vertices, int offset) where T : unmanaged {
+        fixed (T* ptr = &vertices[0])
+            GL.NamedBufferSubData(vbo, offset, vertices.Length * sizeof(T), (nint)ptr);
+    }
+
+    public unsafe void BufferVertices<T>(ref ReadOnlySpan<T> vertices, int offset, int size) where T : unmanaged {
+        fixed (T* ptr = &vertices[0])
+            GL.NamedBufferSubData(vbo, offset, size, (nint)ptr);
+    }
+
+    public unsafe void BufferVertices<T>(ref T* vertices, int size) where T : unmanaged {
+        GL.NamedBufferSubData(vbo, 0, size, (nint)vertices);
+    }
+
+    public unsafe void BufferVertices<T>(ref T* vertices, int offset, int size) where T : unmanaged {
+        GL.NamedBufferSubData(vbo, offset, size, (nint)vertices);
+    }
+
+
+
 
 
     public unsafe void BufferIndices<T>(T[] indices) where T : unmanaged {
@@ -76,6 +101,29 @@ public class VertexArray {
 
     public unsafe void BufferIndices<T>(T[] indices, int offset, int size) where T : unmanaged {
         GL.NamedBufferSubData(ibo, offset, size, indices);
+    }
+
+    public unsafe void BufferIndices<T>(ref ReadOnlySpan<T> indices) where T : unmanaged {
+        fixed (T* ptr = &indices[0])
+            GL.NamedBufferSubData(ibo, 0, indices.Length * sizeof(T), (nint)ptr);
+    }
+
+    public unsafe void BufferIndices<T>(ref ReadOnlySpan<T> indices, int offset) where T : unmanaged {
+        fixed (T* ptr = &indices[0])
+            GL.NamedBufferSubData(ibo, offset, indices.Length * sizeof(T), (nint)ptr);
+    }
+
+    public unsafe void BufferIndices<T>(ref ReadOnlySpan<T> indices, int offset, int size) where T : unmanaged {
+        fixed (T* ptr = &indices[0])
+            GL.NamedBufferSubData(ibo, offset, size, (nint)ptr);
+    }
+
+    public unsafe void BufferIndices<T>(ref T* indices, int size) where T : unmanaged {
+        GL.NamedBufferSubData(ibo, 0, size, (nint)indices);
+    }
+
+    public unsafe void BufferIndices<T>(ref T* indices, int offset, int size) where T : unmanaged {
+        GL.NamedBufferSubData(ibo, offset, size, (nint)indices);
     }
 
 
