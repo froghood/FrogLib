@@ -4,7 +4,7 @@ using StbImageSharp;
 
 namespace FrogLib;
 
-public class Texture {
+public struct Texture {
 
     public int Id { get; }
     public Vector2i Size { get; }
