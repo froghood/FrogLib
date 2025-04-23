@@ -5,7 +5,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace FrogLib;
 
-public class DefaultRenderer : IGameSystem {
+public class DefaultRenderer : GameSystem {
 
 
     private List<DefaultRenderable> renderables;

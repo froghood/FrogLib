@@ -3,7 +3,7 @@ using OpenTK.Mathematics;
 
 namespace FrogLib;
 
-public class TextureAtlas : IGameSystem {
+public class TextureAtlas : GameSystem {
 
     [JsonProperty]
     private int width;

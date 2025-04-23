@@ -7,7 +7,7 @@ namespace FrogLib;
 /// <summary>
 /// wrapper around opentk Game.Window input
 /// </summary>
-public class Input : IGameSystem {
+public class Input : GameSystem {
 
     public event Action<KeyboardKeyEventArgs>? KeyDown;
     public event Action<KeyboardKeyEventArgs>? KeyUp;
