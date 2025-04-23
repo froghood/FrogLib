@@ -53,13 +53,29 @@ internal class GameSystemProvider {
 
     internal void Update() {
         for (int i = 0; i < systems.Count; i++) {
+            systems[i].PreUpdate();
+        }
+
+        for (int i = 0; i < systems.Count; i++) {
             systems[i].Update();
+        }
+
+        for (int i = 0; i < systems.Count; i++) {
+            systems[i].PostUpdate();
         }
     }
 
     internal void Render(float alpha) {
         for (int i = 0; i < systems.Count; i++) {
+            systems[i].PreRender(alpha);
+        }
+
+        for (int i = 0; i < systems.Count; i++) {
             systems[i].Render(alpha);
+        }
+
+        for (int i = 0; i < systems.Count; i++) {
+            systems[i].PostRender(alpha);
         }
     }
 

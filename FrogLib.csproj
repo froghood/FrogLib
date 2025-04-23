@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.0.0-pre-50</Version>
+    <Version>0.0.0-pre-51</Version>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>

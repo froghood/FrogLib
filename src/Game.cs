@@ -142,8 +142,8 @@ public static class Game {
 
 
 
-    public static T Get<T>() where T : GameSystem => systemProvider.Get<T>();
-    public static T Register<T>() where T : GameSystem => systemProvider.Register<T>();
+    public static T Get<T>() where T : IGameSystem => systemProvider.Get<T>();
+    public static T Register<T>() where T : IGameSystem => systemProvider.Register<T>();
 
 
 

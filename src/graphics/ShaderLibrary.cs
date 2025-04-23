@@ -3,7 +3,7 @@ using OpenTK.Mathematics;
 
 namespace FrogLib;
 
-public class ShaderLibrary : GameSystem {
+public class ShaderLibrary : IGameSystem {
 
     private Dictionary<string, Shader> shaders = new();
 
