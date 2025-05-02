@@ -46,6 +46,10 @@ public class SceneStorage : GameSystem {
         }
     }
 
+    protected internal override void PreUpdate() => Current.PreUpdate();
     protected internal override void Update() => Current.Update();
+    protected internal override void PostUpdate() => Current.PostUpdate();
+    protected internal override void PreRender(float alpha) => Current.PreRender(alpha);
     protected internal override void Render(float alpha) => Current.Render(alpha);
+    protected internal override void PostRender(float alpha) => Current.PostRender(alpha);
 }

@@ -23,10 +23,16 @@ public abstract class Scene {
     /// </summary>
     public virtual void Shutdown() { }
 
+    public virtual void PreUpdate() { }
+
     /// <summary>
     /// Called every frame when the game updates
     /// </summary>
     public virtual void Update() { }
+
+    public virtual void PostUpdate() { }
+
+    public virtual void PreRender(float alpha) { }
 
     /// <summary>
     /// Called every frame when the game renderer
@@ -35,6 +41,8 @@ public abstract class Scene {
     /// a value between 0 and 1 measuring the time between the previous and next fixed updates
     /// </param>
     public virtual void Render(float alpha) { }
+
+    public virtual void PostRender(float alpha) { }
 
 
 }
