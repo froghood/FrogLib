@@ -3,28 +3,33 @@ using OpenTK.Graphics.OpenGL4;
 namespace FrogLib;
 public class VertexArray {
 
+
+    public Buffer VertexBuffer => vertexBuffer;
+    public Buffer IndexBuffer => indexBuffer;
+
+
     public int Stride { get; }
     public int TotalNumOfComponents { get; }
 
-    private int vbo;
-    private int ibo;
+    private Buffer vertexBuffer;
+    private Buffer indexBuffer;
     private int vao;
 
     public unsafe VertexArray(int vertexSize, int indexSize, params Layout[] attributes) {
 
-        fixed (int* ptr = &vbo) GL.CreateBuffers(1, ptr);
-        fixed (int* ptr = &ibo) GL.CreateBuffers(1, ptr);
         fixed (int* ptr = &vao) GL.CreateVertexArrays(1, ptr);
 
-        GL.NamedBufferStorage(vbo, vertexSize, 0, BufferStorageFlags.DynamicStorageBit);
-        GL.NamedBufferStorage(ibo, indexSize, 0, BufferStorageFlags.DynamicStorageBit);
+        vertexBuffer = new Buffer();
+        indexBuffer = new Buffer();
+        vertexBuffer.BufferStorage(vertexSize, BufferStorageFlags.DynamicStorageBit);
+        indexBuffer.BufferStorage(indexSize, BufferStorageFlags.DynamicStorageBit);
 
         Stride = GetStride(attributes);
-
-        GL.VertexArrayVertexBuffer(vao, 0, vbo, 0, Stride);
-        GL.VertexArrayElementBuffer(vao, ibo);
-
         TotalNumOfComponents = GetTotalNumOfComponents(attributes);
+
+        GL.VertexArrayVertexBuffer(vao, 0, vertexBuffer.Handle, 0, Stride);
+        GL.VertexArrayElementBuffer(vao, indexBuffer.Handle);
+
 
         int offset = 0;
         for (int i = 0; i < attributes.Length; i++) {
@@ -48,82 +53,6 @@ public class VertexArray {
 
             offset += attribute.Size;
         }
-    }
-
-
-
-    public unsafe void BufferVertices<T>(T[] vertices) where T : unmanaged {
-        GL.NamedBufferSubData(vbo, 0, vertices.Length * sizeof(T), vertices);
-    }
-
-    public unsafe void BufferVertices<T>(T[] vertices, int offset) where T : unmanaged {
-        GL.NamedBufferSubData(vbo, offset, vertices.Length * sizeof(T), vertices);
-    }
-
-    public unsafe void BufferVertices<T>(T[] vertices, int offset, int size) where T : unmanaged {
-        GL.NamedBufferSubData(vbo, offset, size, vertices);
-    }
-
-    public unsafe void BufferVertices<T>(ref ReadOnlySpan<T> vertices) where T : unmanaged {
-        fixed (T* ptr = &vertices[0])
-            GL.NamedBufferSubData(vbo, 0, vertices.Length * sizeof(T), (nint)ptr);
-    }
-
-    public unsafe void BufferVertices<T>(ref ReadOnlySpan<T> vertices, int offset) where T : unmanaged {
-        fixed (T* ptr = &vertices[0])
-            GL.NamedBufferSubData(vbo, offset, vertices.Length * sizeof(T), (nint)ptr);
-    }
-
-    public unsafe void BufferVertices<T>(ref ReadOnlySpan<T> vertices, int offset, int size) where T : unmanaged {
-        fixed (T* ptr = &vertices[0])
-            GL.NamedBufferSubData(vbo, offset, size, (nint)ptr);
-    }
-
-    public unsafe void BufferVertices<T>(ref T* vertices, int size) where T : unmanaged {
-        GL.NamedBufferSubData(vbo, 0, size, (nint)vertices);
-    }
-
-    public unsafe void BufferVertices<T>(ref T* vertices, int offset, int size) where T : unmanaged {
-        GL.NamedBufferSubData(vbo, offset, size, (nint)vertices);
-    }
-
-
-
-
-
-    public unsafe void BufferIndices<T>(T[] indices) where T : unmanaged {
-        GL.NamedBufferSubData(ibo, 0, indices.Length * sizeof(T), indices);
-    }
-
-    public unsafe void BufferIndices<T>(T[] indices, int offset) where T : unmanaged {
-        GL.NamedBufferSubData(ibo, offset, indices.Length * sizeof(T), indices);
-    }
-
-    public unsafe void BufferIndices<T>(T[] indices, int offset, int size) where T : unmanaged {
-        GL.NamedBufferSubData(ibo, offset, size, indices);
-    }
-
-    public unsafe void BufferIndices<T>(ref ReadOnlySpan<T> indices) where T : unmanaged {
-        fixed (T* ptr = &indices[0])
-            GL.NamedBufferSubData(ibo, 0, indices.Length * sizeof(T), (nint)ptr);
-    }
-
-    public unsafe void BufferIndices<T>(ref ReadOnlySpan<T> indices, int offset) where T : unmanaged {
-        fixed (T* ptr = &indices[0])
-            GL.NamedBufferSubData(ibo, offset, indices.Length * sizeof(T), (nint)ptr);
-    }
-
-    public unsafe void BufferIndices<T>(ref ReadOnlySpan<T> indices, int offset, int size) where T : unmanaged {
-        fixed (T* ptr = &indices[0])
-            GL.NamedBufferSubData(ibo, offset, size, (nint)ptr);
-    }
-
-    public unsafe void BufferIndices<T>(ref T* indices, int size) where T : unmanaged {
-        GL.NamedBufferSubData(ibo, 0, size, (nint)indices);
-    }
-
-    public unsafe void BufferIndices<T>(ref T* indices, int offset, int size) where T : unmanaged {
-        GL.NamedBufferSubData(ibo, offset, size, (nint)indices);
     }
 
 
