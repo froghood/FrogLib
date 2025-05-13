@@ -153,6 +153,8 @@ public static class Game {
 
         while (IsRunning) {
 
+            Window.ProcessEvents(0);
+
             Time time = GetTime();
 
             Time = time;
@@ -171,6 +173,8 @@ public static class Game {
         long totalRenderCount = 0L;
 
         while (IsRunning) {
+
+            Window.ProcessEvents(0);
 
             Time time = GetTime();
 
