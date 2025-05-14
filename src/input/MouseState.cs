@@ -31,7 +31,9 @@ internal class MouseState {
     }
 
     internal void Set(OpenTK.Windowing.GraphicsLibraryFramework.MouseState state) {
+        PreviousPosition = Position;
         Position = state.Position;
+        PreviousScroll = Scroll;
         Scroll = state.Scroll;
         for (int i = 0; i < buttons.Length; i++) {
             previousButtons[i] = buttons[i];
