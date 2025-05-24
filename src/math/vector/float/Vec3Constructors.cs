@@ -11,8 +11,8 @@ public readonly partial struct Vec3 : IEquatable<Vec3> {
 
     public Vec3(float n) : this(n, n, n) { }
 
-    public Vec3(Vec2i v, float z) : this(v.X, v.Y, z) { }
-    public Vec3(float x, Vec2i v) : this(x, v.X, v.Y) { }
+    public Vec3(Vec2 v, float z) : this(v.X, v.Y, z) { }
+    public Vec3(float x, Vec2 v) : this(x, v.X, v.Y) { }
 
 
 
