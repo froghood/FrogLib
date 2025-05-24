@@ -1,7 +1,7 @@
 
 namespace FrogLib.Mathematics;
 
-public readonly partial record struct Vec3 {
+public readonly partial struct Vec3 : IEquatable<Vec3> {
 
     private readonly float x;
     private readonly float y;
@@ -66,4 +66,15 @@ public readonly partial record struct Vec3 {
     public static Vec3 operator /(Vec3 a, Vec3 b) => new Vec3(a.x / b.x, a.y / b.y, a.z / b.z);
 
     public static Vec3 operator /(Vec3 a, float b) => new Vec3(a.x / b, a.y / b, a.z / b);
+
+    public static bool operator ==(Vec3 left, Vec3 right) => left.Equals(right);
+
+    public static bool operator !=(Vec3 left, Vec3 right) => !left.Equals(right);
+
+
+
+    public bool Equals(Vec3 other) => x == other.x && y == other.y && z == other.z;
+    public override bool Equals(object? obj) => obj is Vec3 other && Equals(other);
+    public override int GetHashCode() => HashCode.Combine(x, y, z);
+    public override string ToString() => $"({x}, {y}, {z})";
 }

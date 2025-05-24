@@ -1,7 +1,7 @@
 
 namespace FrogLib.Mathematics;
 
-public readonly partial record struct Vec4 {
+public readonly partial struct Vec4 : IEquatable<Vec4> {
 
     public Vec4(float x, float y, float z, float w) {
         this.x = x;
@@ -35,8 +35,8 @@ public readonly partial record struct Vec4 {
     public static implicit operator Vec4(OpenTK.Mathematics.Vector4 v) => new Vec4(v.X, v.Y, v.Z, v.W);
     public static implicit operator OpenTK.Mathematics.Vector4(Vec4 v) => new OpenTK.Mathematics.Vector4(v.x, v.y, v.z, v.w);
 
+    public static implicit operator Vec4(OpenTK.Mathematics.Vector4i v) => new Vec4(v.X, v.Y, v.Z, v.W);
+
     public static explicit operator Vec4(OpenTK.Mathematics.Color4 color) => new Vec4(color.R, color.G, color.B, color.A);
     public static explicit operator OpenTK.Mathematics.Color4(Vec4 v) => new OpenTK.Mathematics.Color4(v.x, v.y, v.z, v.w);
-
-    public static unsafe explicit operator float*(Vec4 v) => &v.x;
 }

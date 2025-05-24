@@ -1,7 +1,7 @@
 
 namespace FrogLib.Mathematics;
 
-public readonly partial record struct Vec4i {
+public readonly partial struct Vec4i : IEquatable<Vec4i> {
 
     private readonly int x;
     private readonly int y;
@@ -11,16 +11,16 @@ public readonly partial record struct Vec4i {
 
 
     public int LengthSquared => x * x + y * y + z * z + w * w;
-    public int LengthManhattan => System.Math.Abs(x) + System.Math.Abs(y) + System.Math.Abs(z) + System.Math.Abs(w);
+    public int LengthManhattan => Math.Abs(x) + Math.Abs(y) + Math.Abs(z) + Math.Abs(w);
     public float Length => MathF.Sqrt(LengthSquared);
 
 
 
-    public static Vec4i Abs(Vec4i e) => new Vec4i(System.Math.Abs(e.x), System.Math.Abs(e.y), System.Math.Abs(e.z), System.Math.Abs(e.w));
+    public static Vec4i Abs(Vec4i e) => new Vec4i(Math.Abs(e.x), Math.Abs(e.y), Math.Abs(e.z), Math.Abs(e.w));
 
-    public static Vec4i Min(Vec4i a, Vec4i b) => new Vec4i(System.Math.Min(a.x, b.x), System.Math.Min(a.y, b.y), System.Math.Min(a.z, b.z), System.Math.Min(a.w, b.w));
+    public static Vec4i Min(Vec4i a, Vec4i b) => new Vec4i(Math.Min(a.x, b.x), Math.Min(a.y, b.y), Math.Min(a.z, b.z), Math.Min(a.w, b.w));
 
-    public static Vec4i Max(Vec4i a, Vec4i b) => new Vec4i(System.Math.Max(a.x, b.x), System.Math.Max(a.y, b.y), System.Math.Max(a.z, b.z), System.Math.Max(a.w, b.w));
+    public static Vec4i Max(Vec4i a, Vec4i b) => new Vec4i(Math.Max(a.x, b.x), Math.Max(a.y, b.y), Math.Max(a.z, b.z), Math.Max(a.w, b.w));
 
     public static Vec4i Clamp(Vec4i e, Vec4i min, Vec4i max) {
         return new Vec4i(
@@ -52,4 +52,15 @@ public readonly partial record struct Vec4i {
     public static Vec4i operator /(Vec4i a, Vec4i b) => new Vec4i(a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w);
 
     public static Vec4i operator /(Vec4i a, int b) => new Vec4i(a.x / b, a.y / b, a.z / b, a.w / b);
+
+    public static bool operator ==(Vec4i left, Vec4i right) => left.Equals(right);
+
+    public static bool operator !=(Vec4i left, Vec4i right) => !left.Equals(right);
+
+
+
+    public bool Equals(Vec4i other) => x == other.x && y == other.y && z == other.z && w == other.w;
+    public override bool Equals(object? obj) => obj is Vec4i other && Equals(other);
+    public override int GetHashCode() => HashCode.Combine(x, y, z, w);
+    public override string ToString() => $"({x}, {y}, {z}, {w})";
 }

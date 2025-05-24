@@ -1,7 +1,7 @@
 
 namespace FrogLib.Mathematics;
 
-public readonly partial record struct Vec2i {
+public readonly partial struct Vec2i : IEquatable<Vec2i> {
 
     private readonly int x;
     private readonly int y;
@@ -9,7 +9,7 @@ public readonly partial record struct Vec2i {
 
 
     public int LengthSquared => x * x + y * y;
-    public int LengthManhattan => System.Math.Abs(x) + System.Math.Abs(y);
+    public int LengthManhattan => Math.Abs(x) + Math.Abs(y);
     public float Length => MathF.Sqrt(LengthSquared);
     public float Angle => MathF.Atan2(y, x);
     public Vec2i PerpendicularRight => new Vec2i(y, -x);
@@ -17,11 +17,11 @@ public readonly partial record struct Vec2i {
 
 
 
-    public static Vec2i Abs(Vec2i e) => new Vec2i(System.Math.Abs(e.x), System.Math.Abs(e.y));
+    public static Vec2i Abs(Vec2i e) => new Vec2i(Math.Abs(e.x), Math.Abs(e.y));
 
-    public static Vec2i Min(Vec2i a, Vec2i b) => new Vec2i(System.Math.Min(a.x, b.x), System.Math.Min(a.y, b.y));
+    public static Vec2i Min(Vec2i a, Vec2i b) => new Vec2i(Math.Min(a.x, b.x), Math.Min(a.y, b.y));
 
-    public static Vec2i Max(Vec2i a, Vec2i b) => new Vec2i(System.Math.Max(a.x, b.x), System.Math.Max(a.y, b.y));
+    public static Vec2i Max(Vec2i a, Vec2i b) => new Vec2i(Math.Max(a.x, b.x), Math.Max(a.y, b.y));
 
     public static Vec2i Clamp(Vec2i e, Vec2i min, Vec2i max) {
         return new Vec2i(
@@ -51,4 +51,15 @@ public readonly partial record struct Vec2i {
     public static Vec2i operator /(Vec2i a, Vec2i b) => new Vec2i(a.x / b.x, a.y / b.y);
 
     public static Vec2i operator /(Vec2i a, int b) => new Vec2i(a.x / b, a.y / b);
+
+    public static bool operator ==(Vec2i left, Vec2i right) => left.Equals(right);
+
+    public static bool operator !=(Vec2i left, Vec2i right) => !left.Equals(right);
+
+
+
+    public bool Equals(Vec2i other) => x == other.x && y == other.y;
+    public override bool Equals(object? obj) => obj is Vec2i other && Equals(other);
+    public override int GetHashCode() => HashCode.Combine(x, y);
+    public override string ToString() => $"({x}, {y})";
 }

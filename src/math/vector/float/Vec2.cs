@@ -1,11 +1,12 @@
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace FrogLib.Mathematics;
 
-public readonly partial record struct Vec2 {
+public readonly partial struct Vec2 : IEquatable<Vec2> {
 
     private readonly float x;
     private readonly float y;
-
 
 
     public float LengthSquared => x * x + y * y;
@@ -18,6 +19,7 @@ public readonly partial record struct Vec2 {
             return this / length;
         }
     }
+
     public Vec2 PerpendicularRight => new Vec2(y, -x);
     public Vec2 PerpendicularLeft => new Vec2(-y, x);
 
@@ -65,4 +67,15 @@ public readonly partial record struct Vec2 {
     public static Vec2 operator /(Vec2 a, Vec2 b) => new Vec2(a.x / b.x, a.y / b.y);
 
     public static Vec2 operator /(Vec2 a, float b) => new Vec2(a.x / b, a.y / b);
+
+    public static bool operator ==(Vec2 left, Vec2 right) => left.Equals(right);
+
+    public static bool operator !=(Vec2 left, Vec2 right) => !left.Equals(right);
+
+
+
+    public bool Equals(Vec2 other) => x == other.x && y == other.y;
+    public override bool Equals(object? obj) => obj is Vec2 other && Equals(other);
+    public override int GetHashCode() => HashCode.Combine(x, y);
+    public override string ToString() => $"({x}, {y})";
 }

@@ -1,7 +1,7 @@
 
 namespace FrogLib.Mathematics;
 
-public readonly partial record struct Vec3 {
+public readonly partial struct Vec3 : IEquatable<Vec3> {
 
     public Vec3(float x, float y, float z) {
         this.x = x;
@@ -29,5 +29,5 @@ public readonly partial record struct Vec3 {
     public static implicit operator Vec3(OpenTK.Mathematics.Vector3 v) => new Vec3(v.X, v.Y, v.Z);
     public static implicit operator OpenTK.Mathematics.Vector3(Vec3 v) => new OpenTK.Mathematics.Vector3(v.x, v.y, v.z);
 
-    public static unsafe explicit operator float*(Vec3 v) => &v.x;
+    public static implicit operator Vec3(OpenTK.Mathematics.Vector3i v) => new Vec3(v.X, v.Y, v.Z);
 }

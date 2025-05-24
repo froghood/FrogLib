@@ -1,7 +1,7 @@
 
 namespace FrogLib.Mathematics;
 
-public readonly partial record struct Vec2 {
+public readonly partial struct Vec2 {
     public float X => x;
     public float Y => y;
 

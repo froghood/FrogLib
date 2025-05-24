@@ -61,8 +61,8 @@ public struct Texture {
 
     public void SetParam(TextureParameterName param, int value) => GL.TextureParameter(Id, param, value);
     public void SetParam(TextureParameterName param, float value) => GL.TextureParameter(Id, param, value);
-    public unsafe void SetParam(TextureParameterName param, Vec4 value) => GL.TextureParameter(Id, param, (float*)value);
-    public unsafe void SetParam(TextureParameterName param, Color4 value) => GL.TextureParameter(Id, param, (float*)(Vec4)value);
+    public unsafe void SetParam(TextureParameterName param, Vec4 value) => GL.TextureParameter(Id, param, (float*)&value);
+    public unsafe void SetParam(TextureParameterName param, Color4 value) => GL.TextureParameter(Id, param, (float*)&value);
 
     public BindlessTexture MakeBindless() => new BindlessTexture(this);
 

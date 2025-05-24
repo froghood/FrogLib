@@ -1,7 +1,7 @@
 
 namespace FrogLib.Mathematics;
 
-public readonly partial record struct Vec2i {
+public readonly partial struct Vec2i : IEquatable<Vec2i> {
 
     public Vec2i(int x, int y) {
         this.x = x;
