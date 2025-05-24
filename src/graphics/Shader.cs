@@ -1,3 +1,4 @@
+using FrogLib.Mathematics;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
@@ -55,16 +56,16 @@ public class Shader {
     public void Uniform(string name, double value) => GL.ProgramUniform1(program, GetUniformLocation(name), value);
 
     // vec2
-    public void Uniform(string name, Vector2 value) => GL.ProgramUniform2(program, GetUniformLocation(name), value);
-    public void Uniform(string name, Vector2i value) => GL.ProgramUniform2(program, GetUniformLocation(name), value);
+    public void Uniform(string name, Vec2 value) => GL.ProgramUniform2(program, GetUniformLocation(name), value);
+    public void Uniform(string name, Vec2i value) => GL.ProgramUniform2(program, GetUniformLocation(name), value);
 
     // vec3
-    public void Uniform(string name, Vector3 value) => GL.ProgramUniform3(program, GetUniformLocation(name), value);
-    public void Uniform(string name, Vector3i value) => GL.ProgramUniform3(program, GetUniformLocation(name), value);
+    public void Uniform(string name, Vec3 value) => GL.ProgramUniform3(program, GetUniformLocation(name), value);
+    public void Uniform(string name, Vec3i value) => GL.ProgramUniform3(program, GetUniformLocation(name), value);
 
     // vec4
-    public void Uniform(string name, Vector4 value) => GL.ProgramUniform4(program, GetUniformLocation(name), value);
-    public void Uniform(string name, Vector4i value) => GL.ProgramUniform4(program, GetUniformLocation(name), value);
+    public void Uniform(string name, Vec4 value) => GL.ProgramUniform4(program, GetUniformLocation(name), value);
+    public void Uniform(string name, Vec4i value) => GL.ProgramUniform4(program, GetUniformLocation(name), value);
     public void Uniform(string name, Color4 value) => GL.ProgramUniform4(program, GetUniformLocation(name), value);
 
     // mat2

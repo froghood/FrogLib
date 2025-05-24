@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using FrogLib.Mathematics;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
@@ -93,7 +94,7 @@ public static class Game {
         isInitialized = true;
     }
 
-    public static void Init(Vector2i size) {
+    public static void Init(Vec2i size) {
 
         var settings = new NativeWindowSettings() {
             ClientSize = size,

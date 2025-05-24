@@ -1,3 +1,4 @@
+using FrogLib.Mathematics;
 using ImGuiNET;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
@@ -144,11 +145,11 @@ public class Input : GameSystem {
 
 
 
-    public Vector2 GetMousePosition() {
+    public Vec2 GetMousePosition() {
         return loopState switch {
             InputLoopState.Update => updateMouseState.Position,
             InputLoopState.Render => renderMouseState.Position,
-            _ => Vector2.Zero
+            _ => Vec2.Zero
         };
     }
 
@@ -160,25 +161,25 @@ public class Input : GameSystem {
     /// if called during a render frame, it's relative to the previous render frame
     /// </summary>
     /// <returns></returns>
-    public Vector2 GetMousePositionDelta() {
+    public Vec2 GetMousePositionDelta() {
         return loopState switch {
             InputLoopState.Update => updateMouseState.PositionDelta,
             InputLoopState.Render => renderMouseState.PositionDelta,
-            _ => Vector2.Zero
+            _ => Vec2.Zero
         };
     }
 
 
 
-    public void SetMousePosition(Vector2 position) => Game.Window.MousePosition = position;
+    public void SetMousePosition(Vec2 position) => Game.Window.MousePosition = position;
 
 
 
-    public Vector2 GetMouseScroll() {
+    public Vec2 GetMouseScroll() {
         return loopState switch {
             InputLoopState.Update => updateMouseState.Scroll,
             InputLoopState.Render => renderMouseState.Scroll,
-            _ => Vector2.Zero
+            _ => Vec2.Zero
         };
     }
 
@@ -190,11 +191,11 @@ public class Input : GameSystem {
     /// if called during a render frame, it's relative to the previous render frame
     /// </summary>
     /// <returns></returns>
-    public Vector2 GetMouseScrollDelta() {
+    public Vec2 GetMouseScrollDelta() {
         return loopState switch {
             InputLoopState.Update => updateMouseState.ScrollDelta,
             InputLoopState.Render => renderMouseState.ScrollDelta,
-            _ => Vector2.Zero
+            _ => Vec2.Zero
         };
     }
 }

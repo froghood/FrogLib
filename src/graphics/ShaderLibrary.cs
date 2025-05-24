@@ -1,3 +1,4 @@
+using FrogLib.Mathematics;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
@@ -29,16 +30,16 @@ public class ShaderLibrary : GameSystem {
     public void Uniform(string shaderName, string uniformName, double value) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
 
     // vec2
-    public void Uniform(string shaderName, string uniformName, Vector2 value) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
-    public void Uniform(string shaderName, string uniformName, Vector2i value) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
+    public void Uniform(string shaderName, string uniformName, Vec2 value) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
+    public void Uniform(string shaderName, string uniformName, Vec2i value) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
 
     // vec3
-    public void Uniform(string shaderName, string uniformName, Vector3 value) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
-    public void Uniform(string shaderName, string uniformName, Vector3i value) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
+    public void Uniform(string shaderName, string uniformName, Vec3 value) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
+    public void Uniform(string shaderName, string uniformName, Vec3i value) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
 
     // vec4
-    public void Uniform(string shaderName, string uniformName, Vector4 value) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
-    public void Uniform(string shaderName, string uniformName, Vector4i value) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
+    public void Uniform(string shaderName, string uniformName, Vec4 value) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
+    public void Uniform(string shaderName, string uniformName, Vec4i value) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);
 
     // mat2
     public void Uniform(string shaderName, string uniformName, Matrix2 value, bool transpose = false) => GetOrThrowIfNotPresent(shaderName).Uniform(uniformName, value);

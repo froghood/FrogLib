@@ -1,3 +1,4 @@
+using FrogLib.Mathematics;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using StbImageSharp;
@@ -7,7 +8,7 @@ namespace FrogLib;
 public struct Texture {
 
     public int Id { get; }
-    public Vector2i Size { get; }
+    public Vec2i Size { get; }
 
 
     private SizedInternalFormat format;
@@ -26,7 +27,7 @@ public struct Texture {
 
         var image = ImageResult.FromStream(stream, ColorComponents.RedGreenBlueAlpha);
 
-        Size = new Vector2i(image.Width, image.Height);
+        Size = new Vec2i(image.Width, image.Height);
 
         GL.TextureStorage2D(id, 1, format, image.Width, image.Height);
 
@@ -39,14 +40,14 @@ public struct Texture {
         GL.CreateTextures(TextureTarget.Texture2D, 1, out int id);
         Id = id;
 
-        Size = new Vector2i(width, height);
+        Size = new Vec2i(width, height);
 
         this.format = format;
 
         GL.TextureStorage2D(id, 1, format, width, height);
     }
 
-    public Texture(Vector2i size, SizedInternalFormat format) : this(size.X, size.Y, format) { }
+    public Texture(Vec2i size, SizedInternalFormat format) : this(size.X, size.Y, format) { }
 
 
 
@@ -60,8 +61,8 @@ public struct Texture {
 
     public void SetParam(TextureParameterName param, int value) => GL.TextureParameter(Id, param, value);
     public void SetParam(TextureParameterName param, float value) => GL.TextureParameter(Id, param, value);
-    public unsafe void SetParam(TextureParameterName param, Vector4 value) => GL.TextureParameter(Id, param, (float*)value);
-    public unsafe void SetParam(TextureParameterName param, Color4 value) => GL.TextureParameter(Id, param, (float*)((Vector4)value));
+    public unsafe void SetParam(TextureParameterName param, Vec4 value) => GL.TextureParameter(Id, param, (float*)value);
+    public unsafe void SetParam(TextureParameterName param, Color4 value) => GL.TextureParameter(Id, param, (float*)(Vec4)value);
 
     public BindlessTexture MakeBindless() => new BindlessTexture(this);
 

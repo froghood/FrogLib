@@ -1,12 +1,12 @@
+using FrogLib.Mathematics;
 using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
 
 namespace FrogLib;
 
 public struct BindlessTexture {
 
     public long Handle { get; }
-    public Vector2i Size { get; }
+    public Vec2i Size { get; }
 
 
 
