@@ -4,10 +4,11 @@ using OpenTK.Mathematics;
 
 namespace FrogLib;
 
-public class Shader {
+public class Shader : IDisposable {
 
     public int Handle => program;
     private int program;
+    private string name;
 
 
 
@@ -15,8 +16,10 @@ public class Shader {
 
 
 
-    public Shader() {
+    public Shader(string name) {
+
         program = GL.CreateProgram();
+        this.name = name;
         uniformLocations = new Dictionary<string, int>();
     }
 
@@ -34,12 +37,13 @@ public class Shader {
         GL.CompileShader(shader);
 
         GL.AttachShader(program, shader);
+        GL.DeleteShader(shader);
         GL.LinkProgram(program);
 
         GL.GetProgram(program, GetProgramParameterName.LinkStatus, out int status);
         if (status == 0) {
             string infoLog = GL.GetProgramInfoLog(program);
-            Log.Warn(infoLog);
+            Log.Warn($"Shader {name}: {infoLog}");
         }
         return this;
     }
@@ -95,4 +99,6 @@ public class Shader {
             throw new Exception($"Could not find the location of uniform {name}");
         }
     }
+
+    public void Dispose() => GL.DeleteProgram(program);
 }
