@@ -151,12 +151,13 @@ public static class Game {
 
 
 
-    public static void AddResource<T>([DisallowNull] T resource) {
+    public static T AddResource<T>([DisallowNull] T resource) {
         var type = typeof(T);
         if (resources.ContainsKey(type)) {
             Log.Warn($"Resource \"{typeof(T).Name}\" already present in the library.");
         }
         resources[type] = resource;
+        return resource;
     }
 
     public static T GetResource<T>() {
