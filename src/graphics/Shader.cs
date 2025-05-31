@@ -40,17 +40,18 @@ public class Shader : IDisposable {
         GL.DeleteShader(shader);
         GL.LinkProgram(program);
 
-        GL.GetProgram(program, GetProgramParameterName.LinkStatus, out int status);
-        if (status == 0) {
-            string infoLog = GL.GetProgramInfoLog(program);
-            Log.Warn($"Shader {name}: {infoLog}");
-        }
         return this;
     }
 
 
 
     public void Use() => GL.UseProgram(program);
+
+
+    public int GetParam(GetProgramParameterName param) {
+        GL.GetProgram(program, param, out int value);
+        return value;
+    }
 
 
 
