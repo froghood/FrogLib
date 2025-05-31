@@ -53,6 +53,8 @@ public class Shader : IDisposable {
         return value;
     }
 
+    public string GetInfolog() => GL.GetProgramInfoLog(program);
+
 
 
     // vec1
