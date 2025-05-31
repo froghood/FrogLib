@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using FrogLib.Mathematics;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -66,6 +67,7 @@ public static class Game {
     private static bool isInitialized;
     private static NativeWindow? window;
     private readonly static GameSystemProvider systemProvider = new();
+    private readonly static Dictionary<Type, object> resources = new();
     private readonly static Stopwatch clock;
 
 
@@ -145,6 +147,26 @@ public static class Game {
 
     public static T Get<T>() where T : GameSystem => systemProvider.Get<T>();
     public static T Register<T>() where T : GameSystem => systemProvider.Register<T>();
+
+
+
+
+    public static void AddResource<T>([DisallowNull] T resource) {
+        var type = typeof(T);
+        if (resources.ContainsKey(type)) {
+            Log.Warn($"Resource \"{typeof(T).Name}\" already present in the library.");
+        }
+        resources[type] = resource;
+    }
+
+    public static T GetResource<T>() {
+        var type = typeof(T);
+        if (!resources.TryGetValue(type, out object? resource)) {
+            throw new Exception($"Resource \"{type.Name}\" not found");
+        }
+        return (T)resource!;
+    }
+
 
 
 
