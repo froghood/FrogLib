@@ -48,6 +48,11 @@ public static class Game {
     public static Time UpdateTime { get; private set; }
 
     /// <summary>
+    /// the total number of update calls so far
+    /// </summary>
+    public static long UpdateCount { get; private set; }
+
+    /// <summary>
     /// the time between the start of the current and previous render calls
     /// </summary>
     public static Time RenderDelta { get; private set; }
@@ -58,9 +63,9 @@ public static class Game {
     public static Time RenderTime { get; private set; }
 
     /// <summary>
-    /// the total number of frames rendered so far
+    /// the total number of render calls so far
     /// </summary>
-    public static long Frame { get; private set; }
+    public static long RenderCount { get; private set; }
 
 
 
@@ -251,6 +256,8 @@ public static class Game {
         UpdateTime = GetTime() - time;
         UpdateDelta = time - previousUpdateTime;
         previousUpdateTime = time;
+
+        UpdateCount++;
     }
 
     private static void Render(float alpha) {
@@ -263,7 +270,7 @@ public static class Game {
         RenderDelta = time - previousRenderTime;
         previousRenderTime = time;
 
-        Frame++;
+        RenderCount++;
     }
 
     private static Time GetTime() => clock.ElapsedTicks / (Stopwatch.Frequency / 1000000L);
