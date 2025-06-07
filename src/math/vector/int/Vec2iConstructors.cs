@@ -19,6 +19,9 @@ public readonly partial struct Vec2i : IEquatable<Vec2i> {
 
 
 
+    public static explicit operator Vec2i(Vec2 v) => new Vec2i((int)v.X, (int)v.Y);
+    public static explicit operator Vec2i(OpenTK.Mathematics.Vector2 v) => new Vec2i((int)v.X, (int)v.Y);
+
     public static implicit operator Vec2i(OpenTK.Mathematics.Vector2i v) => new Vec2i(v.X, v.Y);
     public static implicit operator OpenTK.Mathematics.Vector2i(Vec2i v) => new OpenTK.Mathematics.Vector2i(v.X, v.Y);
 

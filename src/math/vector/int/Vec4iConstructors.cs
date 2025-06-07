@@ -30,6 +30,9 @@ public readonly partial struct Vec4i : IEquatable<Vec4i> {
 
 
 
+    public static explicit operator Vec4i(Vec4 v) => new Vec4i((int)v.X, (int)v.Y, (int)v.Z, (int)v.W);
+    public static explicit operator Vec4i(OpenTK.Mathematics.Vector4 v) => new Vec4i((int)v.X, (int)v.Y, (int)v.Z, (int)v.W);
+
     public static implicit operator Vec4i(OpenTK.Mathematics.Vector4i v) => new Vec4i(v.X, v.Y, v.Z, v.W);
     public static implicit operator OpenTK.Mathematics.Vector4i(Vec4i v) => new OpenTK.Mathematics.Vector4i(v.X, v.Y, v.Z, v.W);
 
