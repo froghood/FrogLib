@@ -8,9 +8,9 @@ public struct Layout {
     public int NumberOfComponents { get; }
     public int TypeSize { get; }
     public int Size { get; }
-    public LayoutFormat Format { get; }
+    internal LayoutFormat Format { get; }
 
-    public Layout(VertexAttribType type, int numberOfComponents, LayoutFormat format = LayoutFormat.Float) {
+    public Layout(VertexAttribType type, int numberOfComponents) {
 
         Type = type;
         NumberOfComponents = numberOfComponents;
@@ -30,13 +30,31 @@ public struct Layout {
             VertexAttribType.Float
             => 4,
 
-            VertexAttribType.Double => 8,
+            VertexAttribType.Double
+            => 8,
 
             _ => throw new Exception("Vertex attribute pointer type size not implemented.")
         };
 
         Size = TypeSize * NumberOfComponents;
 
-        Format = format;
+        Format = Type switch {
+            VertexAttribType.Byte or
+            VertexAttribType.UnsignedByte or
+            VertexAttribType.Short or
+            VertexAttribType.UnsignedShort or
+            VertexAttribType.Int or
+            VertexAttribType.UnsignedInt
+            => LayoutFormat.Int,
+
+            VertexAttribType.HalfFloat or
+            VertexAttribType.Float
+            => LayoutFormat.Float,
+
+            VertexAttribType.Double
+            => LayoutFormat.Double,
+
+            _ => throw new Exception("Vertex attribute pointer type size not implemented.")
+        };
     }
 }
