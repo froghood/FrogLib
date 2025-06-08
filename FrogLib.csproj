@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.0.0-pre-69</Version>
+    <Version>0.0.0-pre-70</Version>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -12,7 +12,7 @@
   <ItemGroup>
     <PackageReference Include="ImGui.NET" Version="1.91.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="OpenTK" Version="4.8.2" />
+    <PackageReference Include="OpenTK" Version="4.9.4" />
     <PackageReference Include="StbImageSharp" Version="2.27.14" />
   </ItemGroup>
 
