@@ -29,7 +29,7 @@ public readonly partial struct Vec3i : IEquatable<Vec3i> {
     public static explicit operator Vec3i(OpenTK.Mathematics.Vector3 v) => new Vec3i((int)v.X, (int)v.Y, (int)v.Z);
 
     public static implicit operator Vec3i(OpenTK.Mathematics.Vector3i v) => new Vec3i(v.X, v.Y, v.Z);
-    public static implicit operator OpenTK.Mathematics.Vector3(Vec3i v) => new OpenTK.Mathematics.Vector3i(v.x, v.y, v.z);
+    public static implicit operator OpenTK.Mathematics.Vector3i(Vec3i v) => new OpenTK.Mathematics.Vector3i(v.x, v.y, v.z);
 
     public static unsafe explicit operator int*(Vec3i v) => &v.x;
 }
