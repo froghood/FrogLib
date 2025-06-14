@@ -15,9 +15,7 @@ public static class Game {
 
     public static NativeWindow Window {
         get {
-            if (!isInitialized) {
-                throw new InvalidOperationException("Game has not been initialized");
-            }
+            ThrowIfNotInitialized();
             return window!;
         }
     }
@@ -70,17 +68,20 @@ public static class Game {
 
 
     private static bool isInitialized;
+
     private static NativeWindow? window;
+
     private readonly static GameSystemProvider systemProvider = new();
+
     private readonly static Dictionary<Type, object> resources = new();
+
+
+
     private readonly static Stopwatch clock;
-
-
-
     private static int targetUpdateFrequency;
     private static int targetRenderFrequency;
-    private static Time previousRenderTime;
     private static Time previousUpdateTime;
+    private static Time previousRenderTime;
 
 
 
@@ -110,35 +111,38 @@ public static class Game {
         };
 
         Init(settings);
-
     }
 
 
 
-    public static void Run(RunType type) {
+    public unsafe static void Run<T>() where T : IRunner, new() {
 
-        if (!isInitialized) {
-            throw new Exception("Game has not been initialized");
-        }
+        ThrowIfNotInitialized();
+        ThrowIfNotRunning();
 
-        if (IsRunning) {
-            throw new Exception("Game is already running");
-        }
-
-        if (IsRunning) return;
         IsRunning = true;
 
         window!.IsVisible = true;
+
         clock!.Restart();
         systemProvider!.Startup();
 
+        var runner = new T();
+        var runnerCallbacks = new RunnerCallbacks(&ProcessEvents, &Update, &Render);
 
-        var methods = new Dictionary<RunType, Action>() {
-            {RunType.VariableCoupled, RunVariableCoupled},
-            {RunType.FixedDecoupled, RunFixedDecoupled}
-        };
+        Time previousTime = 0L;
 
-        methods[type].Invoke();
+        while (IsRunning) {
+
+            var time = GetTime();
+            var delta = time - previousTime;
+            previousTime = time;
+
+            Time = time;
+            Delta = delta;
+
+            runner.Run(runnerCallbacks, time, delta, targetUpdateFrequency, targetRenderFrequency);
+        }
 
         systemProvider.Shutdown();
         window.Dispose();
@@ -152,7 +156,6 @@ public static class Game {
 
     public static T Get<T>() where T : GameSystem => systemProvider.Get<T>();
     public static T Register<T>() where T : GameSystem => systemProvider.Register<T>();
-
 
 
 
@@ -175,62 +178,6 @@ public static class Game {
 
 
 
-
-    private static void RunVariableCoupled() {
-
-        Time previousTime = 0L;
-
-        while (IsRunning) {
-
-            Window.ProcessEvents(0);
-
-            Time time = GetTime();
-
-            Time = time;
-            Delta = time - previousTime;
-            previousTime = time;
-
-            Update();
-
-            if (Delta.AsSeconds() * targetUpdateFrequency <= 1f) Render(1f); // skip 
-        }
-    }
-
-    private static void RunFixedDecoupled() {
-
-        long totalUpdateCount = 0L;
-        long totalRenderCount = 0L;
-
-        while (IsRunning) {
-
-            Window.ProcessEvents(0);
-
-            Time time = GetTime();
-
-            Time = time;
-            Delta = (long)Math.Round(1000000d / targetUpdateFrequency);
-
-            if (time * targetUpdateFrequency >= totalUpdateCount * 1000000L) {
-
-                Update();
-                totalUpdateCount++;
-
-            } else {
-
-                if (time * targetRenderFrequency >= totalRenderCount * 1000000L) {
-
-                    Time nearestRenderCount = time * targetRenderFrequency / 1000000L;
-
-                    float alpha = nearestRenderCount * targetUpdateFrequency % targetRenderFrequency / (float)targetRenderFrequency;
-                    Render(alpha);
-
-                    totalRenderCount = nearestRenderCount + 1;
-
-                }
-            }
-        }
-    }
-
     /// <summary>
     /// sets the target update frequency
     /// </summary>
@@ -247,32 +194,51 @@ public static class Game {
         targetRenderFrequency = Math.Max(frequency, 1);
     }
 
-    private static void Update() {
+
+
+    private static void ProcessEvents(double timeout = 0) => window!.ProcessEvents(timeout);
+
+    private static void Update(bool isFixed) {
 
         Time time = GetTime();
 
         systemProvider?.Update();
 
         UpdateTime = GetTime() - time;
-        UpdateDelta = time - previousUpdateTime;
+        UpdateDelta = isFixed ? 1_000_000L / targetUpdateFrequency : time - previousUpdateTime;
         previousUpdateTime = time;
 
         UpdateCount++;
     }
 
-    private static void Render(float alpha) {
+    private static void Render(bool isFixed, float alpha) {
 
         Time time = GetTime();
 
         systemProvider?.Render(alpha);
 
         RenderTime = GetTime() - time;
-        RenderDelta = time - previousRenderTime;
+        RenderDelta = isFixed ? 1_000_000L / targetRenderFrequency : time - previousRenderTime;
         previousRenderTime = time;
 
         RenderCount++;
     }
 
+
+
     private static Time GetTime() => clock.ElapsedTicks / (Stopwatch.Frequency / 1000000L);
 
+
+
+    private static void ThrowIfNotInitialized() {
+        if (!isInitialized) {
+            throw new Exception("Game has not been initialized");
+        }
+    }
+
+    private static void ThrowIfNotRunning() {
+        if (!IsRunning) {
+            throw new Exception("Game is not running");
+        }
+    }
 }
