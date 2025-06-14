@@ -118,7 +118,7 @@ public static class Game {
     public unsafe static void Run<T>() where T : IRunner, new() {
 
         ThrowIfNotInitialized();
-        ThrowIfNotRunning();
+        ThrowIfRunning();
 
         IsRunning = true;
 
@@ -236,8 +236,8 @@ public static class Game {
         }
     }
 
-    private static void ThrowIfNotRunning() {
-        if (!IsRunning) {
+    private static void ThrowIfRunning() {
+        if (IsRunning) {
             throw new Exception("Game is not running");
         }
     }
