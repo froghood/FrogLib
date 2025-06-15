@@ -83,23 +83,7 @@ public static class Game {
 
 
 
-    // private readonly static Stopwatch clock;
-    // private static int targetUpdateFrequency;
-    // private static int targetRenderFrequency;
-    // private static Time previousUpdateTime;
-    // private static Time previousRenderTime;
-
-
-
     private static IRunner? currentRunner;
-
-
-
-    static Game() {
-        systemProvider = new GameSystemProvider();
-        // clock = new Stopwatch();
-        // clock.Reset();
-    }
 
 
 
@@ -183,10 +167,6 @@ public static class Game {
     private static void Update() => systemProvider?.Update();
 
     private static void Render(float alpha) => systemProvider?.Render(alpha);
-
-
-
-    // private static Time GetTime() => (ulong)clock.ElapsedTicks / ((ulong)Stopwatch.Frequency / 1_000_000UL);
 
 
 

@@ -37,6 +37,8 @@ public class FixedRunner : IRunner {
         this.maxRenderFrequency = maxRenderFrequency;
 
         UpdateDelta = new Time(1_000_000UL / targetUpdateFrequency);
+
+        clock.Start();
     }
 
 
@@ -132,6 +134,8 @@ public class VariableRunner : IRunner {
 
     public VariableRunner(ulong maxRenderFrequency) {
         this.maxRenderFrequency = maxRenderFrequency;
+
+        clock.Start();
     }
 
 
