@@ -27,43 +27,49 @@ public static class Game {
     /// <summary>
     /// the time since the game has been started
     /// </summary>
-    public static Time Time { get; private set; }
+    public static Time Time => currentRunner?.Time ?? 0UL;
 
     /// <summary>
     /// the time between each run iteration
     /// <para> not intended for use, use UpdateDelta or RenderDelta instead </para>
     /// </summary>
-    public static Time Delta { get; private set; }
+    public static Time Delta => currentRunner?.Delta ?? 0UL;
+
+
 
     /// <summary>
     /// the time between the start of the current and previous update calls
     /// </summary>
-    public static Time UpdateDelta { get; private set; }
-
-    /// <summary>
-    /// the time the last update call took to complete
-    /// </summary>
-    public static Time UpdateTime { get; private set; }
-
-    /// <summary>
-    /// the total number of update calls so far
-    /// </summary>
-    public static long UpdateCount { get; private set; }
+    public static Time UpdateDelta => currentRunner?.UpdateDelta ?? 0UL;
 
     /// <summary>
     /// the time between the start of the current and previous render calls
     /// </summary>
-    public static Time RenderDelta { get; private set; }
+    public static Time RenderDelta => currentRunner?.RenderDelta ?? 0UL;
+
+
 
     /// <summary>
-    /// the time the last render call took to complete
+    /// the total number of update calls so far
     /// </summary>
-    public static Time RenderTime { get; private set; }
+    public static uint UpdateCount => currentRunner?.UpdateCount ?? 0U;
 
     /// <summary>
     /// the total number of render calls so far
     /// </summary>
-    public static long RenderCount { get; private set; }
+    public static uint RenderCount => currentRunner?.RenderCount ?? 0U;
+
+
+
+    /// <summary>
+    /// the time the last update call took to complete
+    /// </summary>
+    public static Time UpdateTime => currentRunner?.UpdateTime ?? 0UL;
+
+    /// <summary>
+    /// the time the last render call took to complete
+    /// </summary>
+    public static Time RenderTime => currentRunner?.RenderTime ?? 0UL;
 
 
 
@@ -77,18 +83,22 @@ public static class Game {
 
 
 
-    private readonly static Stopwatch clock;
-    private static int targetUpdateFrequency;
-    private static int targetRenderFrequency;
-    private static Time previousUpdateTime;
-    private static Time previousRenderTime;
+    // private readonly static Stopwatch clock;
+    // private static int targetUpdateFrequency;
+    // private static int targetRenderFrequency;
+    // private static Time previousUpdateTime;
+    // private static Time previousRenderTime;
+
+
+
+    private static IRunner? currentRunner;
 
 
 
     static Game() {
         systemProvider = new GameSystemProvider();
-        clock = new Stopwatch();
-        clock.Reset();
+        // clock = new Stopwatch();
+        // clock.Reset();
     }
 
 
@@ -115,7 +125,7 @@ public static class Game {
 
 
 
-    public unsafe static void Run<T>() where T : IRunner, new() {
+    public unsafe static void Run(IRunner runner) {
 
         ThrowIfNotInitialized();
         ThrowIfRunning();
@@ -124,24 +134,14 @@ public static class Game {
 
         window!.IsVisible = true;
 
-        clock!.Restart();
+        //clock!.Restart();
         systemProvider!.Startup();
 
-        var runner = new T();
+        currentRunner = runner;
         var runnerCallbacks = new RunnerCallbacks(&ProcessEvents, &Update, &Render);
 
-        Time previousTime = 0L;
-
         while (IsRunning) {
-
-            var time = GetTime();
-            var delta = time - previousTime;
-            previousTime = time;
-
-            Time = time;
-            Delta = delta;
-
-            runner.Run(runnerCallbacks, time, delta, targetUpdateFrequency, targetRenderFrequency);
+            runner.Run(runnerCallbacks);
         }
 
         systemProvider.Shutdown();
@@ -178,55 +178,15 @@ public static class Game {
 
 
 
-    /// <summary>
-    /// sets the target update frequency
-    /// </summary>
-    /// <param name="frequency"> the target update frequency in hertz</param>
-    public static void SetTargetUpdateFrequency(int frequency) {
-        targetUpdateFrequency = Math.Max(frequency, 1);
-    }
-
-    /// <summary>
-    /// sets the target render frequency
-    /// </summary>
-    /// <param name="frequency"> the target render frequency in hertz</param>
-    public static void SetTargetRenderFrequency(int frequency) {
-        targetRenderFrequency = Math.Max(frequency, 1);
-    }
-
-
-
     private static void ProcessEvents(double timeout = 0) => window!.ProcessEvents(timeout);
 
-    private static void Update(bool isFixed) {
+    private static void Update() => systemProvider?.Update();
 
-        Time time = GetTime();
-
-        systemProvider?.Update();
-
-        UpdateTime = GetTime() - time;
-        UpdateDelta = isFixed ? 1_000_000L / targetUpdateFrequency : time - previousUpdateTime;
-        previousUpdateTime = time;
-
-        UpdateCount++;
-    }
-
-    private static void Render(bool isFixed, float alpha) {
-
-        Time time = GetTime();
-
-        systemProvider?.Render(alpha);
-
-        RenderTime = GetTime() - time;
-        RenderDelta = isFixed ? 1_000_000L / targetRenderFrequency : time - previousRenderTime;
-        previousRenderTime = time;
-
-        RenderCount++;
-    }
+    private static void Render(float alpha) => systemProvider?.Render(alpha);
 
 
 
-    private static Time GetTime() => clock.ElapsedTicks / (Stopwatch.Frequency / 1000000L);
+    // private static Time GetTime() => (ulong)clock.ElapsedTicks / ((ulong)Stopwatch.Frequency / 1_000_000UL);
 
 
 

@@ -2,5 +2,18 @@
 namespace FrogLib;
 
 public interface IRunner {
-    void Run(RunnerCallbacks callbacks, Time time, Time delta, int targetUpdateFrequency, int targetRenderFrequency);
+
+    Time Time { get; }
+    Time Delta { get; }
+
+    Time UpdateDelta { get; }
+    Time RenderDelta { get; }
+
+    Time UpdateTime { get; }
+    Time RenderTime { get; }
+
+    uint UpdateCount { get; }
+    uint RenderCount { get; }
+
+    void Run(RunnerCallbacks callbacks);
 }
