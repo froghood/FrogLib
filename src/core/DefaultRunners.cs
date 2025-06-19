@@ -63,7 +63,7 @@ public class FixedRunner : IRunner {
 
         if (RenderCount * 1_000_000UL <= renderThreshold) {
 
-            ulong lastUpdateCountTime = (RenderCount - 1) * 1_000_000UL;
+            ulong lastUpdateCountTime = (UpdateCount - 1) * 1_000_000UL;
             float alpha = (updateThreshold - lastUpdateCountTime) / 1_000_000f;
 
             Render(callbacks, alpha);
