@@ -21,6 +21,9 @@ public readonly partial struct Vec2 {
 
     public static implicit operator Vec2(Vec2i v) => new Vec2(v.X, v.Y);
 
+    public static implicit operator Vec2(System.Numerics.Vector2 v) => new Vec2(v.X, v.Y);
+    public static implicit operator System.Numerics.Vector2(Vec2 v) => new System.Numerics.Vector2(v.X, v.Y);
+
     public static implicit operator Vec2(OpenTK.Mathematics.Vector2 v) => new Vec2(v.X, v.Y);
     public static implicit operator OpenTK.Mathematics.Vector2(Vec2 v) => new OpenTK.Mathematics.Vector2(v.X, v.Y);
 

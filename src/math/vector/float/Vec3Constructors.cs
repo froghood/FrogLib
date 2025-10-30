@@ -26,6 +26,9 @@ public readonly partial struct Vec3 : IEquatable<Vec3> {
 
     public static implicit operator Vec3(Vec3i v) => new Vec3(v.X, v.Y, v.Z);
 
+    public static implicit operator Vec3(System.Numerics.Vector3 v) => new Vec3(v.X, v.Y, v.Z);
+    public static implicit operator System.Numerics.Vector3(Vec3 v) => new System.Numerics.Vector3(v.x, v.y, v.z);
+
     public static implicit operator Vec3(OpenTK.Mathematics.Vector3 v) => new Vec3(v.X, v.Y, v.Z);
     public static implicit operator OpenTK.Mathematics.Vector3(Vec3 v) => new OpenTK.Mathematics.Vector3(v.x, v.y, v.z);
 
