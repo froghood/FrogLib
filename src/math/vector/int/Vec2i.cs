@@ -32,6 +32,8 @@ public readonly partial struct Vec2i : IEquatable<Vec2i> {
 
     public static int Dot(Vec2i a, Vec2i b) => a.x * b.x + a.y * b.y;
 
+    public static int Cross(Vec2i a, Vec2i b) => a.x * b.y - a.y * b.x;
+
     public static int DistanceSquared(Vec2i a, Vec2i b) => (b - a).LengthSquared;
 
     public static int DistanceManhattan(Vec2i a, Vec2i b) => (b - a).LengthManhattan;

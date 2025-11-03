@@ -44,9 +44,12 @@ public readonly partial struct Vec2 : IEquatable<Vec2> {
         );
     }
 
+
     public static Vec2 Lerp(Vec2 a, Vec2 b, float t) => a + (b - a) * t;
 
     public static float Dot(Vec2 a, Vec2 b) => a.x * b.x + a.y * b.y;
+
+    public static float Cross(Vec2 a, Vec2 b) => a.x * b.y - a.y * b.x;
 
     public static float DistanceSquared(Vec2 a, Vec2 b) => (b - a).LengthSquared;
 
