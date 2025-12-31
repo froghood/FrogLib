@@ -1,31 +1,22 @@
+using System.Diagnostics.CodeAnalysis;
 using OpenTK.Graphics.OpenGL4;
 
 namespace FrogLib;
 
 public class TextureLibrary : GameSystem {
 
-    private Dictionary<string, Texture> textures = new();
+    private Dictionary<string, ITexture> textures = new();
 
+    public void Add(string name, ITexture texture) {
+        if (textures.TryGetValue(name, out var prevTexture)) {
+            prevTexture.Dispose();
+        }
 
-
-    public void Add(string name, Texture texture) {
-        ThrowIfAlreadyPresent(name);
-        textures.Add(name, texture);
+        textures[name] = texture;
     }
 
-    public void Add(string name, string path, bool preMultiply = false, bool verticalFlip = true) {
-        ThrowIfAlreadyPresent(name);
-        textures.Add(name, new Texture(path, preMultiply, verticalFlip));
-    }
-
-    public void Add(string name, int width, int height, SizedInternalFormat format) {
-        ThrowIfAlreadyPresent(name);
-        textures.Add(name, new Texture(width, height, format));
-    }
-
-    public Texture Get(string name) {
-        if (!textures.TryGetValue(name, out var texture)) return default;
-        return texture;
+    public bool TryGet(string name, out ITexture? texture) {
+        return textures.TryGetValue(name, out texture);
     }
 
     public void Use(string name, int unit) {
@@ -46,9 +37,5 @@ public class TextureLibrary : GameSystem {
     public void SetParam(string name, TextureParameterName param, float value) {
         if (!textures.TryGetValue(name, out var texture)) return;
         texture.SetParam(param, value);
-    }
-
-    private void ThrowIfAlreadyPresent(string name) {
-        if (textures.ContainsKey(name)) throw new Exception($"Texture with the name {name} already present in the library.");
     }
 }
