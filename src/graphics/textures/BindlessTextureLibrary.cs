@@ -74,14 +74,19 @@ public class BindlessTextureLibrary : GameSystem {
         return new ReadOnlySpan<ITexture>(textures, 0, handles.Length);
     }
 
-    public void LoadFile(string path, bool preMultiply = false, bool verticalFlip = true, bool makeResident = false) {
+    public void LoadFile(string path, ReadOnlySpan<TextureParameter> parameters, bool preMultiply = false, bool verticalFlip = true, bool makeResident = false) {
         var texture = Texture2d.FromFile(path, preMultiply, verticalFlip);
+
+        for (int i = 0; i < parameters.Length; i++) {
+            texture.SetParam(parameters[i]);
+        }
+
         Add(Path.GetFileNameWithoutExtension(path), texture, makeResident);
     }
 
-    public void LoadFiles(string path, bool preMultiply = false, bool verticalFlip = true, bool makeResident = false, bool recursive = false) {
+    public void LoadFiles(string path, ReadOnlySpan<TextureParameter> parameters, bool preMultiply = false, bool verticalFlip = true, bool makeResident = false, bool recursive = false) {
         foreach (var file in Directory.EnumerateFiles(path, "*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)) {
-            LoadFile(Path.GetRelativePath(path, file), preMultiply, verticalFlip, makeResident);
+            LoadFile(Path.GetRelativePath(path, file), parameters, preMultiply, verticalFlip, makeResident);
         }
     }
 

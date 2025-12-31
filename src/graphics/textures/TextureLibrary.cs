@@ -29,24 +29,24 @@ public class TextureLibrary : GameSystem {
         texture.UseImage(unit, access);
     }
 
-    public void SetParam(string name, TextureParameterName param, int value) {
+    public void SetParam(string name, in TextureParameter parameter) {
         if (!textures.TryGetValue(name, out var texture)) return;
-        texture.SetParam(param, value);
+        texture.SetParam(parameter);
     }
 
-    public void SetParam(string name, TextureParameterName param, float value) {
-        if (!textures.TryGetValue(name, out var texture)) return;
-        texture.SetParam(param, value);
-    }
-
-    public void LoadFile(string path, bool preMultiply = false, bool verticalFlip = true) {
+    public void LoadFile(string path, ReadOnlySpan<TextureParameter> parameters, bool preMultiply = false, bool verticalFlip = true) {
         var texture = Texture2d.FromFile(path, preMultiply, verticalFlip);
+
+        for (int i = 0; i < parameters.Length; i++) {
+            texture.SetParam(parameters[i]);
+        }
+
         Add(Path.GetFileNameWithoutExtension(path), texture);
     }
 
-    public void LoadFiles(string path, bool preMultiply = false, bool verticalFlip = true, bool recursive = false) {
+    public void LoadFiles(string path, ReadOnlySpan<TextureParameter> parameters, bool preMultiply = false, bool verticalFlip = true, bool recursive = false) {
         foreach (var file in Directory.EnumerateFiles(path, "*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)) {
-            LoadFile(Path.GetRelativePath(path, file), preMultiply, verticalFlip);
+            LoadFile(Path.GetRelativePath(path, file), parameters, preMultiply, verticalFlip);
         }
     }
 }

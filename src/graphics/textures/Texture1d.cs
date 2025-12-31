@@ -53,21 +53,9 @@ public struct Texture1d : ITexture {
         GL.BindImageTexture(unit, id, 0, false, 0, access, format);
     }
 
-    public void SetParam(TextureParameterName param, int value) {
-        ThrowIfHandleLocked();
-        GL.TextureParameter(id, param, value);
-    }
-    public void SetParam(TextureParameterName param, float value) {
-        ThrowIfHandleLocked();
-        GL.TextureParameter(id, param, value);
-    }
-    public unsafe void SetParam(TextureParameterName param, Vec4 value) {
-        ThrowIfHandleLocked();
-        GL.TextureParameter(id, param, (float*)&value);
-    }
-    public unsafe void SetParam(TextureParameterName param, Color4 value) {
-        ThrowIfHandleLocked();
-        GL.TextureParameter(id, param, (float*)&value);
+    public void SetParam(in TextureParameter parameter) {
+        if (isHandleLocked) throw new ImmutableTextureException("A handle has previously been created for this texture.");
+        parameter.Apply(id);
     }
 
     public TextureHandle CreateHandle() {
@@ -78,10 +66,6 @@ public struct Texture1d : ITexture {
     public ImageHandle CreateImageHandle(int level, bool layered, int layer, PixelFormat format) {
         isHandleLocked = true;
         return new ImageHandle(GL.Arb.GetImageHandle(id, level, layered, layer, format));
-    }
-
-    private void ThrowIfHandleLocked() {
-        if (isHandleLocked) throw new ImmutableTextureException("A handle has previously been created for this texture.");
     }
 
     public void Dispose() {

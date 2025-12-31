@@ -11,10 +11,8 @@ public interface ITexture : IDisposable {
     public void Use(int unit);
     public void UseImage(int unit, TextureAccess access);
 
-    public void SetParam(TextureParameterName name, int value);
-    public void SetParam(TextureParameterName name, float value);
-    public void SetParam(TextureParameterName name, Vec4 value);
-    public void SetParam(TextureParameterName name, Color4 value);
+    public void SetParam(in TextureParameter parameter);
+
     public TextureHandle CreateHandle();
     public ImageHandle CreateImageHandle(int level, bool layered, int layer, PixelFormat format);
 }
