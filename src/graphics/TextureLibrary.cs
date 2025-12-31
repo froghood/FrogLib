@@ -38,4 +38,15 @@ public class TextureLibrary : GameSystem {
         if (!textures.TryGetValue(name, out var texture)) return;
         texture.SetParam(param, value);
     }
+
+    public void LoadFile(string path, bool preMultiply = false, bool verticalFlip = true) {
+        var texture = Texture2d.FromFile(path, preMultiply, verticalFlip);
+        Add(Path.GetFileNameWithoutExtension(path), texture);
+    }
+
+    public void LoadFiles(string path, bool preMultiply = false, bool verticalFlip = true, bool recursive = false) {
+        foreach (var file in Directory.EnumerateFiles(path, "*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)) {
+            LoadFile(Path.GetRelativePath(path, file), preMultiply, verticalFlip);
+        }
+    }
 }

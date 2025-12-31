@@ -15,17 +15,21 @@ public class BindlessTextureLibrary : GameSystem {
     private Buffer buffer = new();
 
 
-    public void Add(string name, ITexture texture) {
+    public void Add(string name, ITexture texture, bool makeResident = false) {
 
+        var handle = texture.CreateHandle();
+        if (makeResident) handle.MakeResident();
 
         if (indices.TryGetValue(name, out var index)) {
-            throw new Exception($"Texture with the name {name} already present in the library.");
+            handles[index].MakeNonResident();
+            textures[index].Dispose();
+            handles[index] = handle;
+        } else {
+            index = handles.Push(handle);
+            indices[name] = index;
         }
 
-        index = handles.Push(texture.CreateHandle());
         textures[index] = texture;
-
-        indices[name] = index;
     }
 
 
@@ -68,6 +72,17 @@ public class BindlessTextureLibrary : GameSystem {
 
     public ReadOnlySpan<ITexture> GetTextures() {
         return new ReadOnlySpan<ITexture>(textures, 0, handles.Length);
+    }
+
+    public void LoadFile(string path, bool preMultiply = false, bool verticalFlip = true, bool makeResident = false) {
+        var texture = Texture2d.FromFile(path, preMultiply, verticalFlip);
+        Add(Path.GetFileNameWithoutExtension(path), texture, makeResident);
+    }
+
+    public void LoadFiles(string path, bool preMultiply = false, bool verticalFlip = true, bool makeResident = false, bool recursive = false) {
+        foreach (var file in Directory.EnumerateFiles(path, "*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)) {
+            LoadFile(Path.GetRelativePath(path, file), preMultiply, verticalFlip, makeResident);
+        }
     }
 
 }
