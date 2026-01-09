@@ -5,7 +5,7 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace FrogLib;
 
-public class BindlessTextureLibrary : GameSystem {
+public class BindlessTextureLibrary : Module {
 
 
     private FastStack<TextureHandle> handles = new();

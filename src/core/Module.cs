@@ -1,7 +1,7 @@
 
 namespace FrogLib;
 
-public abstract class GameSystem {
+public abstract class Module {
 
     protected internal virtual void Startup() { }
 

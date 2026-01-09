@@ -1,6 +1,6 @@
 namespace FrogLib;
 
-public class SceneStorage : GameSystem {
+public class SceneStorage : Module {
 
     internal Scene Current { get => current; }
 

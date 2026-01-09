@@ -3,7 +3,7 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace FrogLib;
 
-public class TextureLibrary : GameSystem {
+public class TextureLibrary : Module {
 
     private Dictionary<string, ITexture> textures = new();
 

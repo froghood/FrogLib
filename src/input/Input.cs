@@ -9,7 +9,7 @@ namespace FrogLib;
 /// <summary>
 /// wrapper around opentk Game.Window input
 /// </summary>
-public class Input : GameSystem {
+public class Input : Module {
 
 
 

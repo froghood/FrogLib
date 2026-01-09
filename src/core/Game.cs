@@ -77,9 +77,7 @@ public static class Game {
 
     private static NativeWindow? window;
 
-    private readonly static GameSystemProvider systemProvider = new();
-
-    private readonly static Dictionary<Type, object> resources = new();
+    private readonly static ModuleProvider moduleProvider = new();
 
 
 
@@ -119,7 +117,7 @@ public static class Game {
         window!.IsVisible = true;
 
         //clock!.Restart();
-        systemProvider!.Startup();
+        moduleProvider!.Startup();
 
         currentRunner = runner;
         var runnerCallbacks = new RunnerCallbacks(&ProcessEvents, &Update, &Render);
@@ -128,7 +126,7 @@ public static class Game {
             runner.Run(runnerCallbacks);
         }
 
-        systemProvider.Shutdown();
+        moduleProvider.Shutdown();
         window.Dispose();
     }
 
@@ -138,35 +136,21 @@ public static class Game {
 
 
 
-    public static T Get<T>() where T : GameSystem => systemProvider.Get<T>();
-    public static T Register<T>() where T : GameSystem => systemProvider.Register<T>();
+    public static T Get<T>() where T : Module => moduleProvider.Get<T>();
+    public static T Register<T>(T module) where T : Module => moduleProvider.Register(module);
 
 
 
-    public static T AddResource<T>([DisallowNull] T resource) {
-        var type = typeof(T);
-        if (resources.ContainsKey(type)) {
-            Log.Warn($"Resource \"{typeof(T).Name}\" already present in the library.");
-        }
-        resources[type] = resource;
-        return resource;
-    }
 
-    public static T GetResource<T>() {
-        var type = typeof(T);
-        if (!resources.TryGetValue(type, out object? resource)) {
-            throw new Exception($"Resource \"{type.Name}\" not found");
-        }
-        return (T)resource!;
-    }
+
 
 
 
     private static void ProcessEvents(double timeout = 0) => window!.ProcessEvents(timeout);
 
-    private static void Update() => systemProvider?.Update();
+    private static void Update() => moduleProvider?.Update();
 
-    private static void Render(float alpha) => systemProvider?.Render(alpha);
+    private static void Render(float alpha) => moduleProvider?.Render(alpha);
 
 
 

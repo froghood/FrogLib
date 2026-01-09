@@ -3,85 +3,75 @@ using System.Reflection;
 
 namespace FrogLib;
 
-internal class GameSystemProvider {
+internal class ModuleProvider {
 
 
 
-    private List<GameSystem> systems;
-    private Dictionary<Type, GameSystem> registeredSystems;
+    private FastStack<Module> modules = new();
+    private Dictionary<Type, Module> moduleDict = new();
 
-    public GameSystemProvider() {
-
-        systems = new List<GameSystem>();
-        registeredSystems = new Dictionary<Type, GameSystem>();
-    }
-
-
-
-    internal T Get<T>() where T : GameSystem {
+    internal T Get<T>() where T : Module {
         var type = typeof(T);
 
-        if (!registeredSystems.ContainsKey(type)) {
-            throw new Exception($"Can't get system \"{type.Name}\"; it is not registered");
+        if (moduleDict.TryGetValue(type, out var module)) {
+            return (T)module;
         }
 
-        return (T)registeredSystems[type];
+        throw new Exception($"Can't get module \"{type.Name}\"; it is not registered");
     }
 
-    internal T Register<T>() where T : GameSystem {
+    internal T Register<T>(T module) where T : Module {
 
         var type = typeof(T);
 
-        if (registeredSystems.ContainsKey(type)) {
-            throw new Exception($"System \"{type.Name}\" already registered");
+        if (moduleDict.ContainsKey(type)) {
+            throw new Exception($"Module \"{type.Name}\" already registered");
         }
 
-        var system = (T)Activator.CreateInstance(type, true)!;
+        modules.Push(module);
+        moduleDict[type] = module;
 
-        systems.Add(system);
-        registeredSystems[type] = system;
-
-        return system;
+        return module;
     }
 
     internal void Startup() {
-        for (int i = 0; i < systems.Count; i++) {
-            systems[i].Startup();
+        for (int i = 0; i < modules.Length; i++) {
+            modules[i].Startup();
         }
     }
 
 
     internal void Update() {
-        for (int i = 0; i < systems.Count; i++) {
-            systems[i].PreUpdate();
+        for (int i = 0; i < modules.Length; i++) {
+            modules[i].PreUpdate();
         }
 
-        for (int i = 0; i < systems.Count; i++) {
-            systems[i].Update();
+        for (int i = 0; i < modules.Length; i++) {
+            modules[i].Update();
         }
 
-        for (int i = 0; i < systems.Count; i++) {
-            systems[i].PostUpdate();
+        for (int i = 0; i < modules.Length; i++) {
+            modules[i].PostUpdate();
         }
     }
 
     internal void Render(float alpha) {
-        for (int i = 0; i < systems.Count; i++) {
-            systems[i].PreRender(alpha);
+        for (int i = 0; i < modules.Length; i++) {
+            modules[i].PreRender(alpha);
         }
 
-        for (int i = 0; i < systems.Count; i++) {
-            systems[i].Render(alpha);
+        for (int i = 0; i < modules.Length; i++) {
+            modules[i].Render(alpha);
         }
 
-        for (int i = 0; i < systems.Count; i++) {
-            systems[i].PostRender(alpha);
+        for (int i = 0; i < modules.Length; i++) {
+            modules[i].PostRender(alpha);
         }
     }
 
     internal void Shutdown() {
-        for (int i = 0; i < systems.Count; i++) {
-            systems[i].Shutdown();
+        for (int i = 0; i < modules.Length; i++) {
+            modules[i].Shutdown();
         }
     }
 }
