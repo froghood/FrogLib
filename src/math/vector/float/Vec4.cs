@@ -13,6 +13,9 @@ public readonly partial struct Vec4 : IEquatable<Vec4> {
     public float LengthSquared => x * x + y * y + z * z + w * w;
     public float Length => MathF.Sqrt(LengthSquared);
 
+    public float MinComponent => MathF.Min(x, MathF.Min(y, MathF.Min(z, w)));
+    public float MaxComponent => MathF.Max(x, MathF.Max(y, MathF.Max(z, w)));
+
 
 
     public static Vec4 Abs(Vec4 e) => new Vec4(MathF.Abs(e.x), MathF.Abs(e.y), MathF.Abs(e.z), MathF.Abs(e.w));

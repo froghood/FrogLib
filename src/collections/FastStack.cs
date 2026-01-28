@@ -73,7 +73,7 @@ public class FastStack<T> : IEnumerable<T> {
 
 
     public T Pop() {
-        if (count == 0) throw new Exception("Stack is empty");
+        if (count == 0) throw new InvalidOperationException("Stack is empty");
 
         count--;
 
@@ -97,7 +97,7 @@ public class FastStack<T> : IEnumerable<T> {
 
 
     public ref T Peek() {
-        if (count == 0) throw new Exception("Stack is empty");
+        if (count == 0) throw new InvalidOperationException("Stack is empty");
 
         return ref items[count - 1];
     }

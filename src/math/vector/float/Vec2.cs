@@ -23,6 +23,9 @@ public readonly partial struct Vec2 : IEquatable<Vec2> {
     public Vec2 PerpendicularRight => new Vec2(y, -x);
     public Vec2 PerpendicularLeft => new Vec2(-y, x);
 
+    public float MinComponent => MathF.Min(x, y);
+    public float MaxComponent => MathF.Max(x, y);
+
 
 
     public static Vec2 Abs(Vec2 e) => new Vec2(MathF.Abs(e.x), MathF.Abs(e.y));

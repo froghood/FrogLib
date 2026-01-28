@@ -2,15 +2,15 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace FrogLib;
 
-public struct Layout {
+public struct VertexAttribute {
 
     public VertexAttribType Type { get; }
     public int NumberOfComponents { get; }
     public int TypeSize { get; }
     public int Size { get; }
-    internal LayoutFormat Format { get; }
+    internal FormatType Format { get; }
 
-    public Layout(VertexAttribType type, int numberOfComponents) {
+    public VertexAttribute(VertexAttribType type, int numberOfComponents) {
 
         Type = type;
         NumberOfComponents = numberOfComponents;
@@ -33,7 +33,7 @@ public struct Layout {
             VertexAttribType.Double
             => 8,
 
-            _ => throw new Exception("Vertex attribute pointer type size not implemented.")
+            _ => throw new NotImplementedException("Vertex attribute pointer type size not implemented.")
         };
 
         Size = TypeSize * NumberOfComponents;
@@ -45,16 +45,18 @@ public struct Layout {
             VertexAttribType.UnsignedShort or
             VertexAttribType.Int or
             VertexAttribType.UnsignedInt
-            => LayoutFormat.Int,
+            => FormatType.Int,
 
             VertexAttribType.HalfFloat or
             VertexAttribType.Float
-            => LayoutFormat.Float,
+            => FormatType.Float,
 
             VertexAttribType.Double
-            => LayoutFormat.Double,
+            => FormatType.Double,
 
-            _ => throw new Exception("Vertex attribute pointer type size not implemented.")
+            _ => throw new NotImplementedException("Vertex attribute pointer type not implemented.")
         };
     }
+
+    public enum FormatType { Float, Int, Double };
 }

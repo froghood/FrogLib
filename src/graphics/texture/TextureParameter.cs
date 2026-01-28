@@ -11,64 +11,67 @@ public unsafe struct TextureParameter {
 
     private readonly TextureParameterName name;
     private readonly TextureParamType type;
-    private Byte16 data;
+    private readonly Byte16 value;
+
+
 
     public TextureParameter(TextureParameterName name, int value) {
         this.name = name;
         type = TextureParamType.Int;
-        data = Byte16.Create(value);
+        this.value = Byte16.Create(value);
     }
 
     public TextureParameter(TextureParameterName name, float value) {
         this.name = name;
         type = TextureParamType.Float;
-        data = Byte16.Create(value);
+        this.value = Byte16.Create(value);
     }
 
     public TextureParameter(TextureParameterName name, Vec2 value) {
         this.name = name;
         type = TextureParamType.Float;
-        data = Byte16.Create(value);
+        this.value = Byte16.Create(value);
     }
 
     public TextureParameter(TextureParameterName name, in Vec3 value) {
         this.name = name;
         type = TextureParamType.Float;
-        data = Byte16.Create(value);
+        this.value = Byte16.Create(value);
     }
 
     public TextureParameter(TextureParameterName name, in Vec4 value) {
         this.name = name;
         type = TextureParamType.Float;
-        data = Byte16.Create(value);
+        this.value = Byte16.Create(value);
     }
 
     public TextureParameter(TextureParameterName name, in Color4 value) {
         this.name = name;
         type = TextureParamType.Float;
-        data = Byte16.Create(value);
+        this.value = Byte16.Create(value);
     }
 
-    public void Apply(int textureId) {
+
+
+    internal void Apply(int textureId) {
 
         if (textureId == 0) return;
 
-        var ptr = Unsafe.AsPointer(ref data);
-
-        switch (type) {
-            case TextureParamType.Float: GL.TextureParameter(textureId, name, (float*)ptr); break;
-            case TextureParamType.Int: GL.TextureParameter(textureId, name, (int*)ptr); break;
+        fixed (void* ptr = &value) {
+            switch (type) {
+                case TextureParamType.Float: GL.TextureParameter(textureId, name, (float*)ptr); break;
+                case TextureParamType.Int: GL.TextureParameter(textureId, name, (int*)ptr); break;
+            }
         }
+
+
     }
 
-    public struct Byte16 {
-        public fixed byte Data[16];
 
-        public static Byte16 Create<T>(T value) where T : unmanaged {
-            var data = new Byte16();
-            Unsafe.Copy(&data.Data, ref value);
-            return data;
-        }
+
+    private unsafe struct Byte16 {
+        private fixed byte Data[16];
+        public static Byte16 Create<T>(T value) where T : unmanaged => *(Byte16*)&value;
     }
 
     public enum TextureParamType {

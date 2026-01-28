@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using FrogLib.Mathematics;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -11,11 +12,56 @@ public class ShaderLibrary : Module {
 
 
     public void Add(string name, Shader shader) {
-        ThrowIfPresent(name);
+
+        if (shaders.ContainsKey(name)) {
+            throw new ArgumentException($"Cannot add shader. Shader with the name \"{name}\" already present in the library.");
+        }
+
         shaders.Add(name, shader);
     }
 
-    public Shader Get(string name) => GetOrThrowIfNotPresent(name);
+
+
+    public void LoadFile(string path, string name) {
+
+        if (shaders.ContainsKey(name)) {
+            throw new ArgumentException($"Cannot load shader. Shader with the name \"{name}\" already present in the library.");
+        }
+
+        var shader = Shader.FromFile(path, name);
+
+        shaders.Add(name, shader);
+    }
+
+    public void LoadFile(string path, string name, string outputDir) {
+        var shader = Shader.FromFile(path, name, outputDir);
+        Add(name, shader);
+    }
+
+    public void LoadFiles(string dir, bool recursive = false) {
+        foreach (var path in Directory.EnumerateFiles(dir, "*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)) {
+
+            string name = Path.ChangeExtension(PathExt.ToUnixPath(Path.GetRelativePath(dir, path)), null);
+
+            LoadFile(path, name);
+        }
+    }
+
+    public void LoadFiles(string dir, string outputDir, bool recursive = false) {
+        foreach (var path in Directory.EnumerateFiles(dir, "*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)) {
+
+            string name = Path.ChangeExtension(PathExt.ToUnixPath(Path.GetRelativePath(dir, path)), null);
+
+            LoadFile(path, name, outputDir);
+        }
+    }
+
+
+
+    public Shader GetShader(string name) => GetOrThrowIfNotPresent(name);
+    public bool TryGetShader(string name, [NotNullWhen(true)] out Shader? shader) {
+        return shaders.TryGetValue(name, out shader);
+    }
 
     public void Use(string name) {
         var shader = GetOrThrowIfNotPresent(name);
@@ -56,12 +102,15 @@ public class ShaderLibrary : Module {
 
 
     private void ThrowIfPresent(string name) {
-        if (shaders.ContainsKey(name)) throw new Exception($"Shader with the name {name} already present in the library.");
+        if (shaders.ContainsKey(name)) throw new ArgumentException($"Shader with the name {name} already present in the library.");
     }
 
     private Shader GetOrThrowIfNotPresent(string name) {
         if (shaders.TryGetValue(name, out var shader)) return shader;
-        throw new Exception($"No shader with the name {name} found in the library. If you are using default renderables, be sure to load default shaders.");
+        throw new ArgumentException($"No shader with the name {name} found in the library.");
     }
 
+    protected internal override void Shutdown() {
+        foreach (var shader in shaders.Values) shader.Dispose();
+    }
 }

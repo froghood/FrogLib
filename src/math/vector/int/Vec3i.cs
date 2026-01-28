@@ -13,6 +13,9 @@ public readonly partial struct Vec3i : IEquatable<Vec3i> {
     public float Length => MathF.Sqrt(LengthSquared);
     public int LengthManhattan => Math.Abs(x) + Math.Abs(y) + Math.Abs(z);
 
+    public int MinComponent => Math.Min(x, Math.Min(y, z));
+    public int MaxComponent => Math.Max(x, Math.Max(y, z));
+
 
 
     public static Vec3i Abs(Vec3i e) => new Vec3i(Math.Abs(e.x), Math.Abs(e.y), Math.Abs(e.z));

@@ -19,6 +19,9 @@ public readonly partial struct Vec3 : IEquatable<Vec3> {
         }
     }
 
+    public float MinComponent => MathF.Min(x, MathF.Min(y, z));
+    public float MaxComponent => MathF.Max(x, MathF.Max(y, z));
+
 
 
     public static Vec3 Abs(Vec3 e) => new Vec3(MathF.Abs(e.x), MathF.Abs(e.y), MathF.Abs(e.z));

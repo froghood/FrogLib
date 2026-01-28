@@ -12,8 +12,12 @@ public readonly partial struct Vec2i : IEquatable<Vec2i> {
     public int LengthManhattan => Math.Abs(x) + Math.Abs(y);
     public float Length => MathF.Sqrt(LengthSquared);
     public float Angle => MathF.Atan2(y, x);
+
     public Vec2i PerpendicularRight => new Vec2i(y, -x);
     public Vec2i PerpendicularLeft => new Vec2i(-y, x);
+
+    public int MinComponent => Math.Min(x, y);
+    public int MaxComponent => Math.Max(x, y);
 
 
 

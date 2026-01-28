@@ -156,13 +156,13 @@ public static class Game {
 
     private static void ThrowIfNotInitialized() {
         if (!isInitialized) {
-            throw new Exception("Game has not been initialized");
+            throw new InvalidOperationException("Game has not been initialized");
         }
     }
 
     private static void ThrowIfRunning() {
         if (IsRunning) {
-            throw new Exception("Game is not running");
+            throw new InvalidOperationException("Game is not running");
         }
     }
 }

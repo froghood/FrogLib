@@ -3,6 +3,8 @@ namespace FrogLib.Mathematics;
 
 public readonly partial struct Vec4 : IEquatable<Vec4> {
 
+    // peep the horror
+
     public float X => x;
     public float Y => y;
     public float Z => z;

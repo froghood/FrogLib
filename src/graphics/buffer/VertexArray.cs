@@ -1,23 +1,25 @@
 using OpenTK.Graphics.OpenGL4;
 
 namespace FrogLib;
-public class VertexArray {
 
+public class VertexArray : GLObject {
 
     public Buffer VertexBuffer => vertexBuffer;
     public Buffer IndexBuffer => indexBuffer;
 
-
     public int Stride { get; }
     public int TotalNumOfComponents { get; }
 
+
+
     private Buffer vertexBuffer;
     private Buffer indexBuffer;
-    private int vao;
 
-    public unsafe VertexArray(int vertexSize, int indexSize, params Layout[] attributes) {
 
-        fixed (int* ptr = &vao) GL.CreateVertexArrays(1, ptr);
+
+
+    public VertexArray(int vertexSize, int indexSize, params VertexAttribute[] attributes)
+    : base(GL.CreateVertexArray()) {
 
         vertexBuffer = new Buffer();
         indexBuffer = new Buffer();
@@ -27,29 +29,29 @@ public class VertexArray {
         Stride = GetStride(attributes);
         TotalNumOfComponents = GetTotalNumOfComponents(attributes);
 
-        GL.VertexArrayVertexBuffer(vao, 0, vertexBuffer.Handle, 0, Stride);
-        GL.VertexArrayElementBuffer(vao, indexBuffer.Handle);
+        GL.VertexArrayVertexBuffer(Id, 0, vertexBuffer.Id, 0, Stride);
+        GL.VertexArrayElementBuffer(Id, indexBuffer.Id);
 
 
         int offset = 0;
         for (int i = 0; i < attributes.Length; i++) {
             var attribute = attributes[i];
 
-            GL.EnableVertexArrayAttrib(vao, i);
+            GL.EnableVertexArrayAttrib(Id, i);
 
             switch (attribute.Format) {
-                case LayoutFormat.Float:
-                    GL.VertexArrayAttribFormat(vao, i, attribute.NumberOfComponents, attribute.Type, false, offset);
+                case VertexAttribute.FormatType.Float:
+                    GL.VertexArrayAttribFormat(Id, i, attribute.NumberOfComponents, attribute.Type, false, offset);
                     break;
-                case LayoutFormat.Int:
-                    GL.VertexArrayAttribIFormat(vao, i, attribute.NumberOfComponents, attribute.Type, offset);
+                case VertexAttribute.FormatType.Int:
+                    GL.VertexArrayAttribIFormat(Id, i, attribute.NumberOfComponents, attribute.Type, offset);
                     break;
-                case LayoutFormat.Double:
-                    GL.VertexArrayAttribLFormat(vao, i, attribute.NumberOfComponents, attribute.Type, offset);
+                case VertexAttribute.FormatType.Double:
+                    GL.VertexArrayAttribLFormat(Id, i, attribute.NumberOfComponents, attribute.Type, offset);
                     break;
             }
 
-            GL.VertexArrayAttribBinding(vao, i, 0);
+            GL.VertexArrayAttribBinding(Id, i, 0);
 
             offset += attribute.Size;
         }
@@ -57,11 +59,11 @@ public class VertexArray {
 
 
 
-    public void Use() => GL.BindVertexArray(vao);
+    public void Use() => GL.BindVertexArray(Id);
 
 
 
-    private static int GetStride(Layout[] attributes) {
+    private static int GetStride(VertexAttribute[] attributes) {
         int stride = 0;
         for (int i = 0; i < attributes.Length; i++) {
             stride += attributes[i].Size;
@@ -69,11 +71,17 @@ public class VertexArray {
         return stride;
     }
 
-    private static int GetTotalNumOfComponents(Layout[] attributes) {
+    private static int GetTotalNumOfComponents(VertexAttribute[] attributes) {
         int totalNumOfComponents = 0;
         for (int i = 0; i < attributes.Length; i++) {
             totalNumOfComponents += attributes[i].NumberOfComponents;
         }
         return totalNumOfComponents;
+    }
+
+    protected override void Delete() {
+        vertexBuffer.Dispose();
+        indexBuffer.Dispose();
+        GL.DeleteVertexArray(Id);
     }
 }

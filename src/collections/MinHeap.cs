@@ -32,13 +32,13 @@ public class MinHeap {
     }
 
     public int Peek() {
-        if (next == ROOT) throw new Exception("Min-heap is empty");
+        if (next == ROOT) throw new InvalidOperationException("Min-heap is empty");
         return tree[ROOT];
     }
 
     public int Pop() {
 
-        if (next == ROOT) throw new Exception("Min-heap is empty");
+        if (next == ROOT) throw new InvalidOperationException("Min-heap is empty");
         if (next == ROOT + 1) return tree[--next];
 
         int index = ROOT;

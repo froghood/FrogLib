@@ -17,7 +17,7 @@ internal class ModuleProvider {
             return (T)module;
         }
 
-        throw new Exception($"Can't get module \"{type.Name}\"; it is not registered");
+        throw new InvalidOperationException($"Can't get module \"{type.Name}\"; it is not registered");
     }
 
     internal T Register<T>(T module) where T : Module {
@@ -25,7 +25,7 @@ internal class ModuleProvider {
         var type = typeof(T);
 
         if (moduleDict.ContainsKey(type)) {
-            throw new Exception($"Module \"{type.Name}\" already registered");
+            throw new InvalidOperationException($"Module \"{type.Name}\" already registered");
         }
 
         modules.Push(module);
