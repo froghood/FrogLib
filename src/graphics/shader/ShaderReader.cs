@@ -43,10 +43,10 @@ internal static class ShaderReader {
 
             if (!line.StartsWith('%')) {
                 if (writeLine) {
-                    builder.Write($"#line {lineNumber} \"{sourceName}\"");
+                    builder.Write($"#line {lineNumber} \"{sourceName}\"\n");
                     writeLine = false;
                 }
-                builder.Write(line);
+                builder.Write(line + '\n');
                 continue;
             }
 
@@ -106,10 +106,10 @@ internal static class ShaderReader {
             line = line.Trim();
 
             if (writeLine) {
-                builder.Write($"#line {includeLine} \"{path}\"");
+                builder.Write($"#line {includeLine} \"{path}\"\n");
                 writeLine = false;
             }
-            builder.Write(line);
+            builder.Write(line + '\n');
         }
     }
 

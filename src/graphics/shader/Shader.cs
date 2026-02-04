@@ -10,15 +10,17 @@ public class Shader : GLObject {
     public string Name => name;
 
     private string name;
-    private Dictionary<string, int> uniformLocations;
+    private Dictionary<string, int> uniformLocations = new();
 
 
 
-    internal Shader(string name)
+    internal Shader(string name, ReadOnlySpan<ShaderSource> sources)
     : base(GL.CreateProgram()) {
         this.name = name;
-        uniformLocations = new Dictionary<string, int>();
+        Link(sources);
     }
+
+
 
     public static Shader FromSource(string source, string name) {
         using TextReader text = new StringReader(source);
@@ -42,26 +44,35 @@ public class Shader : GLObject {
 
 
 
-    internal Shader Attach(ShaderType type, string source) {
+    private void Link(ReadOnlySpan<ShaderSource> sources) {
 
-        ThrowIfInvalid();
+        Span<int> shaders = stackalloc int[sources.Length];
 
-        var shader = GL.CreateShader(type);
+        for (int i = 0; i < sources.Length; i++) {
+            var source = sources[i];
 
-        GL.ShaderSource(shader, source);
-        GL.CompileShader(shader);
+            int shader = GL.CreateShader(source.Type);
+            shaders[i] = shader;
 
-        GL.GetShader(shader, ShaderParameter.CompileStatus, out int compileStatus);
-        if (compileStatus == 0) throw new ShaderCompilationException($"Failed to compile shader \"{name}\".\n---------\nShader info\n---------\n{GL.GetShaderInfoLog(shader)}");
+            GL.ShaderSource(shader, source.Source);
+            GL.CompileShader(shader);
 
-        GL.AttachShader(Id, shader);
-        GL.DeleteShader(shader);
+            GL.GetShader(shader, ShaderParameter.CompileStatus, out int compileStatus);
+            if (compileStatus == 0) throw new ShaderCompilationException($"Failed to compile shader \"{name}\".\n---------\nShader info\n---------\n{GL.GetShaderInfoLog(shader)}");
+
+            GL.AttachShader(Id, shader);
+        }
+
         GL.LinkProgram(Id);
 
         GL.GetProgram(Id, GetProgramParameterName.LinkStatus, out int linkStatus);
         if (linkStatus == 0) throw new ShaderLinkException($"Failed to link shader \"{name}\".\n---------\n{GL.GetProgramInfoLog(Id)}");
 
-        return this;
+        for (int i = 0; i < shaders.Length; i++) {
+            int shader = shaders[i];
+            GL.DetachShader(Id, shader);
+            GL.DeleteShader(shader);
+        }
     }
 
 

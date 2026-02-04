@@ -84,12 +84,10 @@ internal unsafe static class ImGuiImplOpenGL3 {
     public static void NewFrame() {
         RendererData* bd = GetBackendData();
 
-        if (bd->ShaderHandle == 0) {
-            CreateDeviceObjects();
-        }
-        if (bd->FontTexture == 0) {
-            CreateFontsTexture();
-        }
+        if (bd->VboHandle == 0) bd->VboHandle = GL.GenBuffer();
+        if (bd->EboHandle == 0) bd->EboHandle = GL.GenBuffer();
+        if (bd->ShaderHandle == 0) CreateShader();
+        if (bd->FontTexture == 0) CreateFontsTexture();
     }
 
     public static void SetupRenderState(ImDrawDataPtr drawData, int fbWidth, int fbHeight, int vao) {
@@ -305,13 +303,8 @@ internal unsafe static class ImGuiImplOpenGL3 {
         return status == 1;
     }
 
-    static void CreateDeviceObjects() {
+    static void CreateShader() {
         RendererData* bd = GetBackendData();
-
-        int last_texture = GL.GetInteger(GetPName.TextureBinding2D);
-        int last_array_buffer = GL.GetInteger(GetPName.ArrayBufferBinding);
-        int last_pixel_unpack_buffer = GL.GetInteger(GetPName.PixelUnpackBufferBinding);
-        int last_vertex_array = GL.GetInteger(GetPName.VertexArray);
 
         string vertex_shader_glsl_120 =
             """
@@ -460,32 +453,24 @@ internal unsafe static class ImGuiImplOpenGL3 {
         GL.CompileShader(frag);
         CheckShader(frag, "fragment shader");
 
-        bd->ShaderHandle = GL.CreateProgram();
-        GL.AttachShader(bd->ShaderHandle, vert);
-        GL.AttachShader(bd->ShaderHandle, frag);
-        GL.LinkProgram(bd->ShaderHandle);
-        CheckProgram(bd->ShaderHandle, "shader program");
+        int program = GL.CreateProgram();
+        GL.AttachShader(program, vert);
+        GL.AttachShader(program, frag);
+        GL.LinkProgram(program);
+        CheckProgram(program, "shader program");
 
-        GL.DetachShader(bd->ShaderHandle, vert);
-        GL.DetachShader(bd->ShaderHandle, frag);
+        GL.DetachShader(program, vert);
+        GL.DetachShader(program, frag);
         GL.DeleteShader(vert);
         GL.DeleteShader(frag);
 
-        bd->UniformLocationTex = GL.GetUniformLocation(bd->ShaderHandle, "Texture");
-        bd->UniformLocationProjMtx = GL.GetUniformLocation(bd->ShaderHandle, "ProjMtx");
-        bd->AttribLocationVtxPos = GL.GetAttribLocation(bd->ShaderHandle, "Position");
-        bd->AttribLocationVtxUV = GL.GetAttribLocation(bd->ShaderHandle, "UV");
-        bd->AttribLocationVtxColor = GL.GetAttribLocation(bd->ShaderHandle, "Color");
+        bd->UniformLocationTex = GL.GetUniformLocation(program, "Texture");
+        bd->UniformLocationProjMtx = GL.GetUniformLocation(program, "ProjMtx");
+        bd->AttribLocationVtxPos = GL.GetAttribLocation(program, "Position");
+        bd->AttribLocationVtxUV = GL.GetAttribLocation(program, "UV");
+        bd->AttribLocationVtxColor = GL.GetAttribLocation(program, "Color");
 
-        bd->VboHandle = GL.GenBuffer();
-        bd->EboHandle = GL.GenBuffer();
-
-        CreateFontsTexture();
-
-        GL.BindTexture(TextureTarget.Texture2D, last_texture);
-        GL.BindBuffer(BufferTarget.ArrayBuffer, last_array_buffer);
-        GL.BindBuffer(BufferTarget.PixelUnpackBuffer, last_pixel_unpack_buffer);
-        GL.BindVertexArray(last_vertex_array);
+        bd->ShaderHandle = program;
     }
 
     static void DestroyDeviceObjects() {
