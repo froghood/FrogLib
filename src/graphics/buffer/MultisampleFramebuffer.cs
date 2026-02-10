@@ -3,11 +3,13 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace FrogLib;
 
-public class Framebuffer : GLObject {
+public class MultisampleFramebuffer : GLObject {
 
     public Vec2i Size => size;
+    public int Samples => samples;
 
     private Vec2i size;
+    private int samples;
 
     private FastStack<TextureAttachment> textures = new();
     private FastStack<RenderbufferAttachment> renderbuffers = new();
@@ -15,9 +17,13 @@ public class Framebuffer : GLObject {
 
 
 
-    public Framebuffer(Vec2i size)
+    public MultisampleFramebuffer(Vec2i size, int samples)
     : base(GL.CreateFramebuffer()) {
         this.size = size;
+        if (samples <= 0) throw new ArgumentException("Samples must be greater than 0.");
+        int maxSamples = GL.GetInteger(GetPName.MaxSamples);
+        if (samples > maxSamples) throw new ArgumentException($"Samples must be less than or equal to the current maximum supported samples: {maxSamples}.");
+        this.samples = samples;
     }
 
 
@@ -32,14 +38,14 @@ public class Framebuffer : GLObject {
 
             ref var previous = ref textures[info.Index];
             previous.Delete();
-            previous = new TextureAttachment(Handle, size, attachment, format, textureParameters); ;
+            previous = new TextureAttachment(Handle, size, samples, attachment, format, textureParameters);
 
             return;
         }
 
         attachmentInfo[attachment] = new AttachmentInfo {
             Type = AttachmentType.Texture,
-            Index = textures.Push(new TextureAttachment(Handle, size, attachment, format, textureParameters))
+            Index = textures.Push(new TextureAttachment(Handle, size, samples, attachment, format, textureParameters))
         };
     }
 
@@ -53,14 +59,14 @@ public class Framebuffer : GLObject {
 
             ref var previous = ref renderbuffers[info.Index];
             previous.Delete();
-            previous = new RenderbufferAttachment(Handle, size, attachment, storage);
+            previous = new RenderbufferAttachment(Handle, size, samples, attachment, storage);
 
             return;
         }
 
         attachmentInfo[attachment] = new AttachmentInfo {
             Type = AttachmentType.Renderbuffer,
-            Index = renderbuffers.Push(new RenderbufferAttachment(Handle, size, attachment, storage))
+            Index = renderbuffers.Push(new RenderbufferAttachment(Handle, size, samples, attachment, storage))
         };
     }
 
@@ -81,13 +87,13 @@ public class Framebuffer : GLObject {
         for (int i = 0; i < textures.Length; i++) {
             ref var previous = ref textures[i];
             previous.Delete();
-            previous = new TextureAttachment(Handle, size, previous.Attachment, previous.Format, previous.Parameters);
+            previous = new TextureAttachment(Handle, size, samples, previous.Attachment, previous.Format, previous.Parameters);
         }
 
         for (int i = 0; i < renderbuffers.Length; i++) {
             ref var previous = ref renderbuffers[i];
             previous.Delete();
-            previous = new RenderbufferAttachment(Handle, size, previous.Attachment, previous.Storage);
+            previous = new RenderbufferAttachment(Handle, size, samples, previous.Attachment, previous.Storage);
         }
 
         this.size = size;
@@ -145,13 +151,13 @@ public class Framebuffer : GLObject {
         GL.NamedFramebufferReadBuffer(Handle, mode);
     }
 
-    public void Blit(Framebuffer other, ClearBufferMask mask, BlitFramebufferFilter filter) {
+    public void Blit(MultisampleFramebuffer other, ClearBufferMask mask, BlitFramebufferFilter filter) {
         ThrowIfInvalid();
         other.ThrowIfInvalid();
         GL.BlitNamedFramebuffer(Handle, other.Handle, 0, 0, size.X, size.Y, 0, 0, size.X, size.Y, mask, filter);
     }
 
-    public void Blit(MultisampleFramebuffer other, ClearBufferMask mask, BlitFramebufferFilter filter) {
+    public void Blit(Framebuffer other, ClearBufferMask mask, BlitFramebufferFilter filter) {
         ThrowIfInvalid();
         other.ThrowIfInvalid();
         GL.BlitNamedFramebuffer(Handle, other.Handle, 0, 0, size.X, size.Y, 0, 0, size.X, size.Y, mask, filter);
@@ -189,12 +195,12 @@ public class Framebuffer : GLObject {
         private SizedInternalFormat format;
         private TextureParameter[] parameters;
 
-        public TextureAttachment(int fbo, Vec2i size, FramebufferAttachment attachment, SizedInternalFormat format, params TextureParameter[] parameters) {
-            handle = GL.CreateTexture(TextureTarget.Texture2D);
+        public TextureAttachment(int fbo, Vec2i size, int samples, FramebufferAttachment attachment, SizedInternalFormat format, params TextureParameter[] parameters) {
+            handle = GL.CreateTexture(TextureTarget.Texture2DMultisample);
             this.attachment = attachment;
             this.format = format;
             this.parameters = parameters;
-            GL.TextureStorage2D(handle, 1, format, size.X, size.Y);
+            GL.TextureStorage2DMultisample(handle, samples, format, size.X, size.Y, true);
 
             for (int i = 0; i < parameters.Length; i++) {
                 parameters[i].Apply(handle);
@@ -225,11 +231,11 @@ public class Framebuffer : GLObject {
         private FramebufferAttachment attachment;
         private RenderbufferStorage storage;
 
-        public RenderbufferAttachment(int fbo, Vec2i size, FramebufferAttachment attachment, RenderbufferStorage storage) {
+        public RenderbufferAttachment(int fbo, Vec2i size, int samples, FramebufferAttachment attachment, RenderbufferStorage storage) {
             handle = GL.CreateRenderbuffer();
             this.attachment = attachment;
             this.storage = storage;
-            GL.NamedRenderbufferStorage(handle, storage, size.X, size.Y);
+            GL.NamedRenderbufferStorageMultisample(handle, samples, storage, size.X, size.Y);
             GL.NamedFramebufferRenderbuffer(fbo, attachment, RenderbufferTarget.Renderbuffer, handle);
         }
 

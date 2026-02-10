@@ -1,8 +1,4 @@
-using System.Runtime.CompilerServices;
-using FrogLib.Mathematics;
 using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
-using StbImageSharp;
 
 namespace FrogLib;
 
@@ -36,7 +32,7 @@ public class Texture1d : Texture {
             throw new ArgumentException("Attempted to set data outside the texture's bounds.");
 
         fixed (T* ptr = data) {
-            GL.TextureSubImage1D(Id, level, offset, size, format, type, (nint)ptr);
+            GL.TextureSubImage1D(Handle, level, offset, size, format, type, (nint)ptr);
         }
     }
 
@@ -45,6 +41,6 @@ public class Texture1d : Texture {
     /// </summary>
     public void SetData<T>(ReadOnlySpan<T> data, int offset, int size, PixelFormat format, PixelType type) where T : unmanaged {
         SetData(data, 0, offset, size, format, type);
-        GL.GenerateTextureMipmap(Id);
+        GL.GenerateTextureMipmap(Handle);
     }
 }

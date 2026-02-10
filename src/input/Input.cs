@@ -1,6 +1,4 @@
 using FrogLib.Mathematics;
-using ImGuiNET;
-using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 

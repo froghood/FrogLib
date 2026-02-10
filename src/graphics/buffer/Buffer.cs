@@ -12,25 +12,25 @@ public class Buffer : GLObject {
 
         ThrowIfInvalid();
 
-        GL.BindBufferBase(target, index, Id);
+        GL.BindBufferBase(target, index, Handle);
     }
     public void Use(BufferTarget target) {
 
         ThrowIfInvalid();
 
-        GL.BindBuffer(target, Id);
+        GL.BindBuffer(target, Handle);
     }
 
 
 
-    public void BufferStorage(int size, BufferStorageFlags flags) => GL.NamedBufferStorage(Id, size, 0, flags);
+    public void BufferStorage(int size, BufferStorageFlags flags) => GL.NamedBufferStorage(Handle, size, 0, flags);
 
     public unsafe void BufferStorage<T>(Span<T> data, BufferStorageFlags flags) where T : unmanaged {
 
         ThrowIfInvalid();
 
         fixed (T* ptr = &data[0]) {
-            GL.NamedBufferStorage(Id, data.Length * sizeof(T), (nint)ptr, flags);
+            GL.NamedBufferStorage(Handle, data.Length * sizeof(T), (nint)ptr, flags);
         }
     }
 
@@ -39,7 +39,7 @@ public class Buffer : GLObject {
         ThrowIfInvalid();
 
         fixed (T* ptr = &data[0]) {
-            GL.NamedBufferStorage(Id, size, (nint)ptr, flags);
+            GL.NamedBufferStorage(Handle, size, (nint)ptr, flags);
         }
     }
 
@@ -48,7 +48,7 @@ public class Buffer : GLObject {
         ThrowIfInvalid();
 
         fixed (T* ptr = &data[0]) {
-            GL.NamedBufferStorage(Id, data.Length * sizeof(T), (nint)ptr, flags);
+            GL.NamedBufferStorage(Handle, data.Length * sizeof(T), (nint)ptr, flags);
         }
     }
 
@@ -57,7 +57,7 @@ public class Buffer : GLObject {
         ThrowIfInvalid();
 
         fixed (T* ptr = &data[0]) {
-            GL.NamedBufferStorage(Id, size, (nint)ptr, flags);
+            GL.NamedBufferStorage(Handle, size, (nint)ptr, flags);
         }
     }
 
@@ -67,7 +67,7 @@ public class Buffer : GLObject {
 
         ThrowIfInvalid();
 
-        GL.NamedBufferData(Id, size, 0, hint);
+        GL.NamedBufferData(Handle, size, 0, hint);
     }
 
     public unsafe void BufferData<T>(Span<T> data, BufferUsageHint hint = BufferUsageHint.StreamDraw) where T : unmanaged {
@@ -75,7 +75,7 @@ public class Buffer : GLObject {
         ThrowIfInvalid();
 
         fixed (T* ptr = &data[0]) {
-            GL.NamedBufferData(Id, data.Length * sizeof(T), (nint)ptr, hint);
+            GL.NamedBufferData(Handle, data.Length * sizeof(T), (nint)ptr, hint);
         }
     }
 
@@ -84,7 +84,7 @@ public class Buffer : GLObject {
         ThrowIfInvalid();
 
         fixed (T* ptr = &data[0]) {
-            GL.NamedBufferData(Id, size, (nint)ptr, hint);
+            GL.NamedBufferData(Handle, size, (nint)ptr, hint);
         }
     }
 
@@ -93,7 +93,7 @@ public class Buffer : GLObject {
         ThrowIfInvalid();
 
         fixed (T* ptr = &data[0]) {
-            GL.NamedBufferData(Id, data.Length * sizeof(T), (nint)ptr, hint);
+            GL.NamedBufferData(Handle, data.Length * sizeof(T), (nint)ptr, hint);
         }
     }
 
@@ -102,7 +102,7 @@ public class Buffer : GLObject {
         ThrowIfInvalid();
 
         fixed (T* ptr = &data[0]) {
-            GL.NamedBufferData(Id, size, (nint)ptr, hint);
+            GL.NamedBufferData(Handle, size, (nint)ptr, hint);
         }
     }
 
@@ -113,7 +113,7 @@ public class Buffer : GLObject {
         ThrowIfInvalid();
 
         fixed (T* ptr = &data[0]) {
-            GL.NamedBufferSubData(Id, 0, data.Length * sizeof(T), (nint)ptr);
+            GL.NamedBufferSubData(Handle, 0, data.Length * sizeof(T), (nint)ptr);
         }
     }
 
@@ -122,7 +122,7 @@ public class Buffer : GLObject {
         ThrowIfInvalid();
 
         fixed (T* ptr = &data[0]) {
-            GL.NamedBufferSubData(Id, offset, data.Length * sizeof(T), (nint)ptr);
+            GL.NamedBufferSubData(Handle, offset, data.Length * sizeof(T), (nint)ptr);
         }
     }
 
@@ -131,7 +131,7 @@ public class Buffer : GLObject {
         ThrowIfInvalid();
 
         fixed (T* ptr = &data[0]) {
-            GL.NamedBufferSubData(Id, offset, size, (nint)ptr);
+            GL.NamedBufferSubData(Handle, offset, size, (nint)ptr);
         }
     }
 
@@ -140,7 +140,7 @@ public class Buffer : GLObject {
         ThrowIfInvalid();
 
         fixed (T* ptr = &data[0]) {
-            GL.NamedBufferSubData(Id, 0, data.Length * sizeof(T), (nint)ptr);
+            GL.NamedBufferSubData(Handle, 0, data.Length * sizeof(T), (nint)ptr);
         }
     }
 
@@ -149,7 +149,7 @@ public class Buffer : GLObject {
         ThrowIfInvalid();
 
         fixed (T* ptr = &data[0]) {
-            GL.NamedBufferSubData(Id, offset, data.Length * sizeof(T), (nint)ptr);
+            GL.NamedBufferSubData(Handle, offset, data.Length * sizeof(T), (nint)ptr);
         }
     }
 
@@ -158,7 +158,7 @@ public class Buffer : GLObject {
         ThrowIfInvalid();
 
         fixed (T* ptr = &data[0]) {
-            GL.NamedBufferSubData(Id, offset, size, (nint)ptr);
+            GL.NamedBufferSubData(Handle, offset, size, (nint)ptr);
         }
     }
 
@@ -169,7 +169,7 @@ public class Buffer : GLObject {
         ThrowIfInvalid();
 
         fixed (T* ptr = &data[0]) {
-            GL.GetNamedBufferSubData(Id, offset, data.Length * sizeof(T), (nint)ptr);
+            GL.GetNamedBufferSubData(Handle, offset, data.Length * sizeof(T), (nint)ptr);
         }
     }
 
@@ -178,7 +178,7 @@ public class Buffer : GLObject {
         ThrowIfInvalid();
 
         T data = default;
-        GL.GetNamedBufferSubData<T>(Id, offset, sizeof(T), ref data);
+        GL.GetNamedBufferSubData<T>(Handle, offset, sizeof(T), ref data);
         return data;
     }
 
@@ -188,10 +188,10 @@ public class Buffer : GLObject {
 
         ThrowIfInvalid();
 
-        GL.CopyNamedBufferSubData(Id, other.Id, sourceOffset, destOffset, size);
+        GL.CopyNamedBufferSubData(Handle, other.Handle, sourceOffset, destOffset, size);
     }
 
     protected override void Delete() {
-        GL.DeleteBuffer(Id);
+        GL.DeleteBuffer(Handle);
     }
 }

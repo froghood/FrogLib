@@ -1,6 +1,3 @@
-
-using System.Diagnostics.CodeAnalysis;
-
 namespace FrogLib.Mathematics;
 
 public readonly partial struct Vec2 : IEquatable<Vec2> {

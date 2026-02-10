@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using FrogLib.Mathematics;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -61,7 +60,7 @@ public class Texture2d : Texture {
         if (!bounds.FullyContains(subregion)) throw new ArgumentException("Attempted to set data outside the texture's bounds.");
 
         fixed (T* ptr = data) {
-            GL.TextureSubImage2D(Id, level, subregion.Min.X, subregion.Min.Y, subregion.Size.X, subregion.Size.Y, format, type, (nint)ptr);
+            GL.TextureSubImage2D(Handle, level, subregion.Min.X, subregion.Min.Y, subregion.Size.X, subregion.Size.Y, format, type, (nint)ptr);
         }
     }
 
@@ -70,6 +69,6 @@ public class Texture2d : Texture {
     /// </summary>
     public void SetData<T>(ReadOnlySpan<T> data, in Box2i subregion, PixelFormat format, PixelType type) where T : unmanaged {
         SetData(data, 0, subregion, format, type);
-        GL.GenerateTextureMipmap(Id);
+        GL.GenerateTextureMipmap(Handle);
     }
 }

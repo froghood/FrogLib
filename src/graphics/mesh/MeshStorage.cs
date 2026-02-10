@@ -1,7 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 using System.Text;
-using System.Text.Unicode;
 using OpenTK.Graphics.OpenGL4;
 
 namespace FrogLib;
@@ -24,7 +22,7 @@ public class MeshStorage : Module {
         GL.CreateVertexArrays(1, out vao);
         indices.BufferStorage(indexBufferSize, BufferStorageFlags.DynamicStorageBit);
 
-        GL.VertexArrayElementBuffer(vao, indices.Id);
+        GL.VertexArrayElementBuffer(vao, indices.Handle);
     }
 
     public void Load(int vertexCount, int vertexSize, ReadOnlySpan<byte> vertexData, ReadOnlySpan<uint> indexData, string name) {

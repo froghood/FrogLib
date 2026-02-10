@@ -1,7 +1,6 @@
 using ImGuiNET;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -16,14 +15,14 @@ internal unsafe static class ImGuiImplOpenGL3 {
         public uint IdxOffset;
         public uint ElemCount;
         public nint UserCallback;
-        public unsafe void* UserCallbackData;
+        public void* UserCallbackData;
         public int UserCallbackDataSize;
         public int UserCallbackDataOffset;
     }
     internal struct ImDrawCmdPtr_fixed {
-        public unsafe ImDrawCmd_fixed* NativePtr { get; }
+        public ImDrawCmd_fixed* NativePtr { get; }
 
-        public unsafe nint GetTexID() {
+        public nint GetTexID() {
             return ImGuiNative.ImDrawCmd_GetTexID((ImDrawCmd*)NativePtr);
         }
     }

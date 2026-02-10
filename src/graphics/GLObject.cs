@@ -4,32 +4,34 @@ namespace FrogLib;
 
 public abstract class GLObject : IDisposable {
 
+    /// <summary>
+    /// The OpenGL object handle
+    /// </summary>
+    public int Handle => handle;
+    public bool IsDeleted => handle == 0;
 
-    public int Id => id;
-    public bool IsDeleted => id == 0;
 
-
-    private int id;
+    private int handle;
 
     ~GLObject() => Dispose();
 
     public GLObject(int id) {
-        this.id = id;
+        handle = id;
     }
 
     public void Dispose() {
-        if (id == 0) return;
+        if (handle == 0) return;
 
         GC.SuppressFinalize(this);
         Delete();
 
-        id = 0;
+        handle = 0;
     }
 
     protected abstract void Delete();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected void ThrowIfInvalid() {
-        if (id == 0) throw new OpenGLObjectInvalidException($"{GetType().Name} is deleted.");
+    internal void ThrowIfInvalid() {
+        if (handle == 0) throw new OpenGLObjectInvalidException($"{GetType().Name} is deleted.");
     }
 }

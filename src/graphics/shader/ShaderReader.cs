@@ -1,4 +1,3 @@
-using System.Net;
 using OpenTK.Graphics.OpenGL4;
 
 namespace FrogLib;

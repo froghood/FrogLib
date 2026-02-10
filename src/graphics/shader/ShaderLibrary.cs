@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using FrogLib.Mathematics;
-using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
 namespace FrogLib;

@@ -1,43 +1,75 @@
 using System.Diagnostics.CodeAnalysis;
-using OpenTK.Graphics.OpenGL4;
 
 namespace FrogLib;
 
 public class TextureLibrary : Module {
 
-    private Dictionary<string, Texture> textures = new();
+    private FastStack<Texture> textures = new();
+    private Dictionary<int, int> indicesById = new();
+    private Dictionary<string, int> idsByName = new();
+    private int nextId = 0;
 
     public void Add(string name, Texture texture) {
-        if (textures.TryGetValue(name, out var prevTexture)) {
-            prevTexture.Dispose();
-        }
+        if (idsByName.ContainsKey(name)) throw new ArgumentException($"Texture with the name {name} already present in the library.");
 
-        textures[name] = texture;
+        int id = nextId++;
+        indicesById[id] = textures.Push(texture);
+        idsByName[name] = id;
     }
 
     public Texture GetTexture(string name) {
-        if (!textures.TryGetValue(name, out var texture)) throw new ArgumentException($"No texture with the name {name} found in the library.");
-        return texture;
+        if (!idsByName.TryGetValue(name, out int id)) throw new ArgumentException($"No texture with the name {name} found in the library.");
+
+        return textures[indicesById[id]];
+    }
+
+    public Texture GetTexture(int id) {
+
+        if (!indicesById.TryGetValue(id, out int index)) throw new ArgumentException($"No texture with the id {id} found in the library.");
+
+        return textures[index];
+    }
+
+    public int GetId(string name) {
+        if (!idsByName.TryGetValue(name, out int id)) throw new ArgumentException($"No texture with the name {name} found in the library.");
+        return id;
     }
 
     public bool TryGetTexture(string name, [NotNullWhen(true)] out Texture? texture) {
-        return textures.TryGetValue(name, out texture);
+        if (!idsByName.TryGetValue(name, out int id)) {
+            texture = null;
+            return false;
+        }
+
+        texture = textures[indicesById[id]];
+        return true;
     }
 
-    public void Use(string name, int unit) {
-        if (!textures.TryGetValue(name, out var texture)) return;
-        texture.Use(unit);
+    public bool TryGetTexture(int id, [NotNullWhen(true)] out Texture? texture) {
+        if (!indicesById.TryGetValue(id, out int index)) {
+            texture = null;
+            return false;
+        }
+
+        texture = textures[index];
+        return true;
     }
 
-    public void UseImage(string name, int unit, TextureAccess access) {
-        if (!textures.TryGetValue(name, out var texture)) return;
-        texture.UseImage(unit, access);
+    public bool TryGetId(string name, out int id) => idsByName.TryGetValue(name, out id);
+
+
+
+    public void Remove(string name, bool dispose = true) {
+        if (!idsByName.TryGetValue(name, out int id)) throw new ArgumentException($"No texture with the name {name} found in the library.");
+
+        var texture = textures.Remove(indicesById[id]);
+        if (dispose) texture.Dispose();
+
+        indicesById.Remove(id);
+        idsByName.Remove(name);
     }
 
-    public void SetParam(string name, in TextureParameter parameter) {
-        if (!textures.TryGetValue(name, out var texture)) return;
-        texture.SetParam(parameter);
-    }
+
 
     public void LoadFile(string path, string name, int levels, ReadOnlySpan<TextureParameter> parameters, bool preMultiply = false, bool verticalFlip = true) {
         var texture = Texture2d.FromFile(path, levels, preMultiply, verticalFlip);
@@ -59,6 +91,8 @@ public class TextureLibrary : Module {
     }
 
     protected internal override void Shutdown() {
-        foreach (var texture in textures.Values) texture.Dispose();
+        for (int i = 0; i < textures.Length; i++) {
+            textures[i].Dispose();
+        }
     }
 }

@@ -1,7 +1,6 @@
 using FrogLib.Mathematics;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace FrogLib;
 
@@ -60,17 +59,17 @@ public class Shader : GLObject {
             GL.GetShader(shader, ShaderParameter.CompileStatus, out int compileStatus);
             if (compileStatus == 0) throw new ShaderCompilationException($"Failed to compile shader \"{name}\".\n---------\nShader info\n---------\n{GL.GetShaderInfoLog(shader)}");
 
-            GL.AttachShader(Id, shader);
+            GL.AttachShader(Handle, shader);
         }
 
-        GL.LinkProgram(Id);
+        GL.LinkProgram(Handle);
 
-        GL.GetProgram(Id, GetProgramParameterName.LinkStatus, out int linkStatus);
-        if (linkStatus == 0) throw new ShaderLinkException($"Failed to link shader \"{name}\".\n---------\n{GL.GetProgramInfoLog(Id)}");
+        GL.GetProgram(Handle, GetProgramParameterName.LinkStatus, out int linkStatus);
+        if (linkStatus == 0) throw new ShaderLinkException($"Failed to link shader \"{name}\".\n---------\n{GL.GetProgramInfoLog(Handle)}");
 
         for (int i = 0; i < shaders.Length; i++) {
             int shader = shaders[i];
-            GL.DetachShader(Id, shader);
+            GL.DetachShader(Handle, shader);
             GL.DeleteShader(shader);
         }
     }
@@ -81,7 +80,7 @@ public class Shader : GLObject {
 
         ThrowIfInvalid();
 
-        GL.UseProgram(Id);
+        GL.UseProgram(Handle);
     }
 
 
@@ -89,40 +88,40 @@ public class Shader : GLObject {
 
         ThrowIfInvalid();
 
-        GL.GetProgram(Id, param, out int value);
+        GL.GetProgram(Handle, param, out int value);
         return value;
     }
 
 
     // vec1
-    public void Uniform(string name, float value) => GL.ProgramUniform1(Id, GetUniformLocation(name), value);
-    public void Uniform(string name, int value) => GL.ProgramUniform1(Id, GetUniformLocation(name), value);
-    public void Uniform(string name, double value) => GL.ProgramUniform1(Id, GetUniformLocation(name), value);
+    public void Uniform(string name, float value) => GL.ProgramUniform1(Handle, GetUniformLocation(name), value);
+    public void Uniform(string name, int value) => GL.ProgramUniform1(Handle, GetUniformLocation(name), value);
+    public void Uniform(string name, double value) => GL.ProgramUniform1(Handle, GetUniformLocation(name), value);
 
     // vec2
-    public void Uniform(string name, Vec2 value) => GL.ProgramUniform2(Id, GetUniformLocation(name), value);
-    public void Uniform(string name, Vec2i value) => GL.ProgramUniform2(Id, GetUniformLocation(name), value);
+    public void Uniform(string name, Vec2 value) => GL.ProgramUniform2(Handle, GetUniformLocation(name), value);
+    public void Uniform(string name, Vec2i value) => GL.ProgramUniform2(Handle, GetUniformLocation(name), value);
 
     // vec3
-    public void Uniform(string name, Vec3 value) => GL.ProgramUniform3(Id, GetUniformLocation(name), value);
-    public void Uniform(string name, Vec3i value) => GL.ProgramUniform3(Id, GetUniformLocation(name), value);
+    public void Uniform(string name, Vec3 value) => GL.ProgramUniform3(Handle, GetUniformLocation(name), value);
+    public void Uniform(string name, Vec3i value) => GL.ProgramUniform3(Handle, GetUniformLocation(name), value);
 
     // vec4
-    public void Uniform(string name, Vec4 value) => GL.ProgramUniform4(Id, GetUniformLocation(name), value);
-    public void Uniform(string name, Vec4i value) => GL.ProgramUniform4(Id, GetUniformLocation(name), value);
-    public void Uniform(string name, Color4 value) => GL.ProgramUniform4(Id, GetUniformLocation(name), value);
+    public void Uniform(string name, Vec4 value) => GL.ProgramUniform4(Handle, GetUniformLocation(name), value);
+    public void Uniform(string name, Vec4i value) => GL.ProgramUniform4(Handle, GetUniformLocation(name), value);
+    public void Uniform(string name, Color4 value) => GL.ProgramUniform4(Handle, GetUniformLocation(name), value);
 
     // mat2
-    public void Uniform(string name, Matrix2 value, bool transpose = false) => GL.ProgramUniformMatrix2(Id, GetUniformLocation(name), transpose, ref value);
-    public void Uniform(string name, Matrix2d value, bool transpose = false) => GL.ProgramUniformMatrix2(Id, GetUniformLocation(name), transpose, ref value);
+    public void Uniform(string name, Matrix2 value, bool transpose = false) => GL.ProgramUniformMatrix2(Handle, GetUniformLocation(name), transpose, ref value);
+    public void Uniform(string name, Matrix2d value, bool transpose = false) => GL.ProgramUniformMatrix2(Handle, GetUniformLocation(name), transpose, ref value);
 
     // mat3
-    public void Uniform(string name, Matrix3 value, bool transpose = false) => GL.ProgramUniformMatrix3(Id, GetUniformLocation(name), transpose, ref value);
-    public void Uniform(string name, Matrix3d value, bool transpose = false) => GL.ProgramUniformMatrix3(Id, GetUniformLocation(name), transpose, ref value);
+    public void Uniform(string name, Matrix3 value, bool transpose = false) => GL.ProgramUniformMatrix3(Handle, GetUniformLocation(name), transpose, ref value);
+    public void Uniform(string name, Matrix3d value, bool transpose = false) => GL.ProgramUniformMatrix3(Handle, GetUniformLocation(name), transpose, ref value);
 
     // mat4
-    public void Uniform(string name, Matrix4 value, bool transpose = false) => GL.ProgramUniformMatrix4(Id, GetUniformLocation(name), transpose, ref value);
-    public void Uniform(string name, Matrix4d value, bool transpose = false) => GL.ProgramUniformMatrix4(Id, GetUniformLocation(name), transpose, ref value);
+    public void Uniform(string name, Matrix4 value, bool transpose = false) => GL.ProgramUniformMatrix4(Handle, GetUniformLocation(name), transpose, ref value);
+    public void Uniform(string name, Matrix4d value, bool transpose = false) => GL.ProgramUniformMatrix4(Handle, GetUniformLocation(name), transpose, ref value);
 
 
 
@@ -133,7 +132,7 @@ public class Shader : GLObject {
         if (uniformLocations.ContainsKey(name)) {
             return uniformLocations[name];
         } else {
-            int location = GL.GetUniformLocation(Id, name);
+            int location = GL.GetUniformLocation(Handle, name);
             if (location >= 0) {
                 uniformLocations[name] = location;
                 return location;
@@ -144,6 +143,6 @@ public class Shader : GLObject {
     }
 
     protected override void Delete() {
-        GL.DeleteProgram(Id);
+        GL.DeleteProgram(Handle);
     }
 }

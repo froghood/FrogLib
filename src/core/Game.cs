@@ -1,10 +1,4 @@
-﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Net;
-using FrogLib.Mathematics;
-using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
-using OpenTK.Windowing.Common;
+﻿using FrogLib.Mathematics;
 using OpenTK.Windowing.Desktop;
 
 namespace FrogLib;
@@ -138,11 +132,6 @@ public static class Game {
 
     public static T Get<T>() where T : Module => moduleProvider.Get<T>();
     public static T Register<T>(T module) where T : Module => moduleProvider.Register(module);
-
-
-
-
-
 
 
 

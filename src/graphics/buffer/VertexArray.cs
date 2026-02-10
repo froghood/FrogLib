@@ -29,29 +29,29 @@ public class VertexArray : GLObject {
         Stride = GetStride(attributes);
         TotalNumOfComponents = GetTotalNumOfComponents(attributes);
 
-        GL.VertexArrayVertexBuffer(Id, 0, vertexBuffer.Id, 0, Stride);
-        GL.VertexArrayElementBuffer(Id, indexBuffer.Id);
+        GL.VertexArrayVertexBuffer(Handle, 0, vertexBuffer.Handle, 0, Stride);
+        GL.VertexArrayElementBuffer(Handle, indexBuffer.Handle);
 
 
         int offset = 0;
         for (int i = 0; i < attributes.Length; i++) {
             var attribute = attributes[i];
 
-            GL.EnableVertexArrayAttrib(Id, i);
+            GL.EnableVertexArrayAttrib(Handle, i);
 
             switch (attribute.Format) {
                 case VertexAttribute.FormatType.Float:
-                    GL.VertexArrayAttribFormat(Id, i, attribute.NumberOfComponents, attribute.Type, false, offset);
+                    GL.VertexArrayAttribFormat(Handle, i, attribute.NumberOfComponents, attribute.Type, false, offset);
                     break;
                 case VertexAttribute.FormatType.Int:
-                    GL.VertexArrayAttribIFormat(Id, i, attribute.NumberOfComponents, attribute.Type, offset);
+                    GL.VertexArrayAttribIFormat(Handle, i, attribute.NumberOfComponents, attribute.Type, offset);
                     break;
                 case VertexAttribute.FormatType.Double:
-                    GL.VertexArrayAttribLFormat(Id, i, attribute.NumberOfComponents, attribute.Type, offset);
+                    GL.VertexArrayAttribLFormat(Handle, i, attribute.NumberOfComponents, attribute.Type, offset);
                     break;
             }
 
-            GL.VertexArrayAttribBinding(Id, i, 0);
+            GL.VertexArrayAttribBinding(Handle, i, 0);
 
             offset += attribute.Size;
         }
@@ -59,7 +59,7 @@ public class VertexArray : GLObject {
 
 
 
-    public void Use() => GL.BindVertexArray(Id);
+    public void Use() => GL.BindVertexArray(Handle);
 
 
 
@@ -82,6 +82,6 @@ public class VertexArray : GLObject {
     protected override void Delete() {
         vertexBuffer.Dispose();
         indexBuffer.Dispose();
-        GL.DeleteVertexArray(Id);
+        GL.DeleteVertexArray(Handle);
     }
 }

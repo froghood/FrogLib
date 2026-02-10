@@ -1,7 +1,6 @@
 using FrogLib.Mathematics;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
-using StbImageSharp;
 
 namespace FrogLib;
 
@@ -33,7 +32,7 @@ public class Texture3d : Texture {
         if (!bounds.FullyContains(subregion)) throw new ArgumentException("Attempted to set data outside the texture's bounds.");
 
         fixed (T* ptr = data) {
-            GL.TextureSubImage3D(Id, level, subregion.Min.X, subregion.Min.Y, subregion.Min.Z, subregion.Size.X, subregion.Size.Y, subregion.Size.Z, format, type, (nint)ptr);
+            GL.TextureSubImage3D(Handle, level, subregion.Min.X, subregion.Min.Y, subregion.Min.Z, subregion.Size.X, subregion.Size.Y, subregion.Size.Z, format, type, (nint)ptr);
         }
     }
 
@@ -42,7 +41,7 @@ public class Texture3d : Texture {
     /// </summary>
     public void SetData<T>(ReadOnlySpan<T> data, Box3i subregion, PixelFormat format, PixelType type) where T : unmanaged {
         SetData(data, 0, subregion, format, type);
-        GL.GenerateTextureMipmap(Id);
+        GL.GenerateTextureMipmap(Handle);
     }
 }
 
