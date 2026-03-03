@@ -4,7 +4,7 @@ namespace FrogLib;
 
 internal class ShaderBuilder {
 
-    public int ShaderTypeCount => sources.Length - 1;
+    public int ShaderTypeCount => sources.Length;
     public bool IsCompute => isCompute;
     public bool HasVersion => version != string.Empty;
 
