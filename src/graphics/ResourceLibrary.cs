@@ -56,7 +56,7 @@ public abstract class ResourceLibrary<T> : Module where T : class {
     protected int AddResource(string name, T resource) {
         if (idsByName.ContainsKey(name)) AlreadyPresentMessage(name);
 
-        int id = nextId++;
+        int id = ++nextId;
         indicesById[id] = resources.Push(new ResourceInfo { Id = id, Resource = resource });
         idsByName[name] = id;
         return id;
