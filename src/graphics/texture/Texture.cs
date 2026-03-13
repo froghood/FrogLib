@@ -9,11 +9,13 @@ public abstract class Texture : GLObject {
 
     public TextureTarget Target => target;
     public int Levels => levels;
+    public Vec3i Size => size;
     public SizedInternalFormat Format => format;
 
 
     private TextureTarget target;
     private int levels;
+    private Vec3i size;
     private SizedInternalFormat format;
 
 
@@ -33,6 +35,7 @@ public abstract class Texture : GLObject {
 
         this.target = target;
         this.levels = levels;
+        this.size = size;
         this.format = format;
 
         GL.TextureStorage3D(Handle, levels, format, size.X, size.Y, size.Z);
@@ -48,6 +51,7 @@ public abstract class Texture : GLObject {
 
         this.target = target;
         this.levels = levels;
+        this.size = new Vec3i(size, 1);
         this.format = format;
 
         GL.TextureStorage2D(Handle, levels, format, size.X, size.Y);
@@ -64,6 +68,7 @@ public abstract class Texture : GLObject {
 
         this.target = target;
         this.levels = levels;
+        this.size = new Vec3i(size, 1, 1);
         this.format = format;
 
         GL.TextureStorage1D(Handle, levels, format, size);

@@ -7,22 +7,8 @@ namespace FrogLib;
 
 public class Texture2d : Texture {
 
-
-    public Vec2i Size => size;
-
-    private Vec2i size;
-
     public Texture2d(TextureTarget2d target, int levels, Vec2i size, SizedInternalFormat format, params TextureParameter[] parameters)
-    : base(
-        (TextureTarget)target,
-        levels,
-        size,
-        format,
-        parameters
-    ) {
-
-        this.size = size;
-    }
+    : base((TextureTarget)target, levels, size, format, parameters) { }
 
     public static Texture2d FromFile(string path, int levels, bool preMultiply = false, bool verticalFlip = true) {
 
@@ -56,7 +42,7 @@ public class Texture2d : Texture {
 
         if (level < 0 || level >= Levels) throw new ArgumentException($"Mipmap level {level} is outside the texture's available mipmap range: (0 - {Levels}).");
 
-        var bounds = new Box2i(Vec2i.Zero, size);
+        var bounds = new Box2i(Vec2i.Zero, Size.XY);
         if (!bounds.FullyContains(subregion)) throw new ArgumentException("Attempted to set data outside the texture's bounds.");
 
         fixed (T* ptr = data) {

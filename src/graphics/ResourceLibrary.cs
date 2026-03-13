@@ -13,17 +13,26 @@ public abstract class ResourceLibrary<T> : Module where T : class {
 
 
     public T Get(string name) {
-        if (!idsByName.TryGetValue(name, out int id)) NotFoundMessage(name);
+        if (!idsByName.TryGetValue(name, out int id)) {
+            throw new ArgumentException(NotFoundMessage(name));
+        }
+
         return resources[indicesById[id]].Resource;
     }
 
     public T Get(int id) {
-        if (!indicesById.TryGetValue(id, out int index)) NotFoundMessage(id);
+        if (!indicesById.TryGetValue(id, out int index)) {
+            throw new ArgumentException(NotFoundMessage(id));
+        }
+
         return resources[index].Resource;
     }
 
     public int GetId(string name) {
-        if (!idsByName.TryGetValue(name, out int id)) NotFoundMessage(name);
+        if (!idsByName.TryGetValue(name, out int id)) {
+            throw new ArgumentException(NotFoundMessage(name));
+        }
+
         return id;
     }
 
@@ -54,7 +63,9 @@ public abstract class ResourceLibrary<T> : Module where T : class {
 
 
     protected int AddResource(string name, T resource) {
-        if (idsByName.ContainsKey(name)) AlreadyPresentMessage(name);
+        if (idsByName.ContainsKey(name)) {
+            throw new ArgumentException(AlreadyPresentMessage(name));
+        }
 
         int id = ++nextId;
         indicesById[id] = resources.Push(new ResourceInfo { Id = id, Resource = resource });
@@ -65,7 +76,10 @@ public abstract class ResourceLibrary<T> : Module where T : class {
 
 
     protected T RemoveResource(string name) {
-        if (!idsByName.Remove(name, out int id)) NotFoundMessage(name);
+        if (!idsByName.Remove(name, out int id)) {
+            throw new ArgumentException(NotFoundMessage(name));
+        }
+
         indicesById.Remove(id, out int index);
 
         var resource = resources.Remove(index).Resource;
@@ -78,7 +92,10 @@ public abstract class ResourceLibrary<T> : Module where T : class {
     }
 
     protected T RemoveResource(string name, Func<T, T, T> onAdjust) {
-        if (!idsByName.Remove(name, out int id)) NotFoundMessage(name);
+        if (!idsByName.Remove(name, out int id)) {
+            throw new ArgumentException(NotFoundMessage(name));
+        }
+
         indicesById.Remove(id, out int index);
 
         var resource = resources.Remove(index).Resource;
@@ -102,13 +119,8 @@ public abstract class ResourceLibrary<T> : Module where T : class {
 
 
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected virtual string AlreadyPresentMessage(string name) => $"Resource with the name '{name}' is already present in the library.";
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected virtual string NotFoundMessage(string name) => $"No resource with the name '{name}' found in the library.";
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected virtual string NotFoundMessage(int id) => $"No resource with the id '{id}' found in the library.";
 
 

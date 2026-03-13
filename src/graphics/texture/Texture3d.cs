@@ -6,21 +6,8 @@ namespace FrogLib;
 
 public class Texture3d : Texture {
 
-    public Vec3i Size => size;
-
-    private Vec3i size;
-
     public Texture3d(TextureTarget3d target, int levels, Vec3i size, SizedInternalFormat format, params TextureParameter[] parameters)
-    : base(
-        (TextureTarget)target,
-        levels,
-        size,
-        format,
-        parameters
-    ) {
-
-        this.size = size;
-    }
+    : base((TextureTarget)target, levels, size, format, parameters) { }
 
     public unsafe void SetData<T>(ReadOnlySpan<T> data, int level, Box3i subregion, PixelFormat format, PixelType type) where T : unmanaged {
 
@@ -28,7 +15,7 @@ public class Texture3d : Texture {
 
         if (level < 0 || level >= Levels) throw new ArgumentException($"Mipmap Level {level} is outside the texture's available mipmap range: (0 - {Levels}).");
 
-        var bounds = new Box3i(Vec3i.Zero, size);
+        var bounds = new Box3i(Vec3i.Zero, Size);
         if (!bounds.FullyContains(subregion)) throw new ArgumentException("Attempted to set data outside the texture's bounds.");
 
         fixed (T* ptr = data) {
