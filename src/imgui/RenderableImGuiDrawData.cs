@@ -1,4 +1,5 @@
-using ImGuiNET;
+using Hexa.NET.ImGui;
+using Hexa.NET.ImGui.Backends.OpenGL3;
 
 namespace FrogLib;
 
