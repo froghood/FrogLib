@@ -48,7 +48,7 @@ internal class ShaderBuilder {
                 $"#version {version}\n" + globalSource + source.Source));
         }
 
-        return new Shader(name, buildBuffer.Span());
+        return new Shader(name, buildBuffer.Span);
     }
 
     public void Output(string name, string dir) {

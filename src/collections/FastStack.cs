@@ -14,7 +14,7 @@ public class FastStack<T> : IEnumerable<T> {
     public int Capacity => items.Length;
     public int Length => count;
 
-
+    public Span<T> Span => new Span<T>(items, 0, count);
 
     private int count;
 
@@ -126,17 +126,6 @@ public class FastStack<T> : IEnumerable<T> {
 
         return item;
     }
-
-
-
-    public ReadOnlySpan<T> Span(int index, int count) {
-
-        if (index < 0 || index + count > this.count) throw new IndexOutOfRangeException();
-
-        return new ReadOnlySpan<T>(items, index, count);
-    }
-
-    public ReadOnlySpan<T> Span() => count > 0 ? new ReadOnlySpan<T>(items, 0, count) : ReadOnlySpan<T>.Empty;
 
 
 
